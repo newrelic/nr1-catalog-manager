@@ -1,0 +1,6 @@
+{
+    "schemaType": "NERDLET",
+    "id": "nr1-catalog-manager-nerdlet",
+    "displayName": "New Relic One Catalog Manager",
+    "description": "Meta management of New Relic One Catalog apps"
+}

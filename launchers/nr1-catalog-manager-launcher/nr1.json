@@ -1,0 +1,7 @@
+{
+    "schemaType": "LAUNCHER",
+    "id": "nr1-catalog-manager-launcher",
+    "displayName": "New Relic One Catalog Manager",
+    "description": "Meta management of New Relic One Catalog apps",
+    "rootNerdletId": "nr1-catalog-manager-nerdlet"
+}
