@@ -166,6 +166,37 @@ export const USER_REPOS_QUERY = gql`
   }
 `;
 
+export const PULL_REQUESTS_QUERY = gql`
+  {
+    repository(name: "nr1-catalog", owner: "newrelic") {
+      pullRequests(
+        last: 100
+        orderBy: { field: CREATED_AT, direction: ASC }
+        states: OPEN
+      ) {
+        totalCount
+        nodes {
+          author {
+            login
+          }
+          title
+          updatedAt
+          labels(last: 10) {
+            nodes {
+              name
+            }
+          }
+          createdAt
+          body
+          bodyText
+          state
+          url
+        }
+      }
+    }
+  }
+`;
+
 // {
 //   search(query: "org:newrelic nr1 fork:false archived:false is:public", type: REPOSITORY, first: 100) {
 //     repositoryCount
