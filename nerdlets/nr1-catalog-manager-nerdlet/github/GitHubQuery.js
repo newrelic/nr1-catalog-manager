@@ -10,8 +10,8 @@ import { CATALOG_REPOS_QUERY, USER_REPOS_QUERY } from '../graphql/Queries';
 
 export default class GitHubQuery extends React.Component {
   static propTypes = {
-    userToken: PropTypes.string,
-    isSetup: PropTypes.bool
+    userToken: PropTypes.string
+    // isSetup: PropTypes.bool
   };
 
   _filterCatalogApps(search) {
@@ -22,13 +22,14 @@ export default class GitHubQuery extends React.Component {
   }
 
   render() {
-    const { isSetup, userToken } = this.props;
+    // const { isSetup, userToken } = this.props;
+    const { userToken } = this.props;
 
     const apClient = client(userToken);
 
-    if (!isSetup) {
-      return <></>;
-    }
+    // if (!isSetup) {
+    //   return <></>;
+    // }
 
     return (
       <ApolloProvider client={apClient}>

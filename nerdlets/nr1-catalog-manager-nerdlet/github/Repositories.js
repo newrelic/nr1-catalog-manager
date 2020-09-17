@@ -1,6 +1,14 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { HeadingText, TextField, Button, BlockText, Modal } from 'nr1';
+import {
+  HeadingText,
+  TextField,
+  Button,
+  BlockText,
+  Modal,
+  Table,
+  TableRow
+} from 'nr1';
 import get from 'lodash.get';
 import Deploy from '../deploy/Deploy';
 
@@ -53,8 +61,11 @@ export default class Repositories extends PureComponent {
     return (
       <>
         <div>
-          <HeadingText spacingType={[HeadingText.SPACING_TYPE.OMIT]}>
-            Repository List for user:{' '}
+          <HeadingText
+            spacingType={[HeadingText.SPACING_TYPE.OMIT]}
+            className="heading"
+          >
+            Catalog Repository List for user:{' '}
             <strong style={{ color: '#038b99' }}>{viewer.login}</strong>
           </HeadingText>
           <TextField
@@ -173,10 +184,11 @@ export default class Repositories extends PureComponent {
                 repo={this.state.deploymentRepo}
                 user={this.state.viewer.login}
                 userToken={userToken}
+                closeModal={this._onClose}
               />
-              <Button onClick={this._onClose} style={{ marginTop: '10px' }}>
+              {/* <Button onClick={this._onClose} style={{ marginTop: '10px' }}>
                 Close
-              </Button>
+              </Button> */}
             </>
           )}
         </Modal>
