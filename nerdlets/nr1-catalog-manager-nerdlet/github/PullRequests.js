@@ -83,7 +83,7 @@ export default class PullRequests extends PureComponent {
                   <div style={{ overflowX: 'auto' }}>
                     <Table
                       items={repository.pullRequests.nodes}
-                      selected={({ item }) => item.selected}
+                      // selected={({ item }) => item.selected}
                       onSelect={(evt, { item }) =>
                         (item.selected = evt.target.checked)
                       }

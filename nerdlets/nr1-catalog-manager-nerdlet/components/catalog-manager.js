@@ -15,6 +15,7 @@ import {
 import Auth from '../auth/Auth';
 import GitHubQuery from '../github/GitHubQuery';
 import PullRequests from '../github/PullRequests';
+import Workflows from '../github/Workflows';
 import Status from '../constants/Status';
 import Settings from '../auth/Settings';
 
@@ -114,7 +115,13 @@ export default class CatalogManager extends React.Component {
               <TabsItem value="tab-2" label="Pull Requests">
                 <PullRequests userToken={userToken} />
               </TabsItem>
-              <TabsItem value="tab-3" label="Settings">
+              <TabsItem value="tab-3" label="Workflows">
+                <Workflows
+                  userToken={userToken}
+                  githubUrl="https://api.github.com/"
+                />
+              </TabsItem>
+              <TabsItem value="tab-4" label="Settings">
                 <Settings setUserToken={this._setUserToken} />
               </TabsItem>
             </Tabs>
