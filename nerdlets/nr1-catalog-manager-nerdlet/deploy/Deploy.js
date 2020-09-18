@@ -214,7 +214,7 @@ export default class Deploy extends React.Component {
   }
 
   render() {
-    const { isSetup, userToken, repo } = this.props;
+    const { userToken, repo } = this.props;
     console.log('deploymentRepo:', repo);
     console.log('State:', this.state);
     // console.log(userToken);
@@ -225,9 +225,9 @@ export default class Deploy extends React.Component {
     //   return <></>;
     // }
 
-    if (!isSetup) {
-      return <></>;
-    }
+    // if (!isSetup) {
+    //   return <></>;
+    // }
 
     return (
       // <Grid className="container integration-container">
