@@ -43,7 +43,7 @@ export default class GitHubQuery extends React.Component {
             const { search, viewer } = data;
 
             if (loading || !search) {
-              return <Spinner fillContainer />;
+              return <Spinner fillContainer style={{ height: '100vh' }} />;
             }
 
             // eslint-disable-next-line no-console
