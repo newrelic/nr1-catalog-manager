@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Github from '../github';
+import Github from '../github/github-rest-client';
 import {
   Grid,
   GridItem,

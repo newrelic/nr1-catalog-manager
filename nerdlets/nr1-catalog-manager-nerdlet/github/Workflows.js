@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import Github from '../github';
+import Github from './github-rest-client';
+import BootstrapTable from 'react-bootstrap-table-next';
+import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import {
   Grid,
   GridItem,
@@ -17,7 +19,8 @@ import {
   TableHeader,
   TableHeaderCell,
   TableRow,
-  TableRowCell
+  TableRowCell,
+  Modal
 } from 'nr1';
 import get from 'lodash.get';
 
@@ -33,7 +36,8 @@ export default class Workflows extends PureComponent {
     super(props);
 
     this.state = {
-      status: Status.LOADING
+      status: Status.LOADING,
+      hidden: true
     };
   }
 
@@ -42,139 +46,162 @@ export default class Workflows extends PureComponent {
 
     const github = new Github({ userToken, githubUrl });
 
-    // const repo_path = `repos/newrelic/${appName}/actions/workflows/catalog.yml/dispatches`;s
     const nr1_catalog_path = `repos/newrelic/nr1-catalog/actions/workflows/generate-catalog-pr.yml/runs`;
 
     const nr1_catalog_runs = await github.get(nr1_catalog_path);
 
     console.log('nr1_catalog_runs', nr1_catalog_runs);
 
-    // Toast.showToast({
-    //   title: 'Deploy Initiated',
-    //   description:
-    //     'GitHub Workflows initiated. Refresh Workflow tab to view progress.',
-    //   // actions: [{
-    //   //   label: 'Say hi!',
-    //   //   onClick: () => console.log('Hello World!'),
-    //   // }],
-    //   type: Toast.TYPE.NORMAL
-    // });
-
     this.setState({
       status: Status.DATA_FETCHED,
-      nr1CatalogWorkflows: nr1_catalog_runs,
-      column_0: TableHeaderCell.SORTING_TYPE.ASCENDING
+      nr1CatalogWorkflows: nr1_catalog_runs
     });
   }
 
-  // async triggerWorkflowDispatch(event) {
-  //   event.preventDefault();
-  //   // console.log(
-  //   //   this.state.githubUrl,
-  //   //   this.state.userToken,
-  //   //   this.props.githubUrl,
-  //   //   this.props.userToken,
-  //   //   this.state.appName,
-  //   //   this.state.version,
-  //   //   this.state.ref,
-  //   //   this.state.user
-  //   // );
-  //   const { userToken, githubUrl, repo } = this.props;
-  //   const { appName, version, ref, user } = this.state;
-  //   console.log('DISPATCH:', this.state);
-  //   const github = new Github({ userToken, githubUrl });
-  //   // const path = `repos/jbeveland27/prototype-nr1-actions/actions/workflows/catalog.yml/dispatches`;
-  //   const path = `repos/newrelic/${appName}/actions/workflows/catalog.yml/dispatches`;
+  fetchWorkflowJobs = async (event, { item, index }) => {
+    console.log('item', item);
+    this.setState({ hidden: false, status: Status.FETCHING });
 
-  //   await github.post(path, {
-  //     ref: 'main',
-  //     inputs: { appName, version, ref, user }
-  //   });
+    const { id: run_id } = item;
+    console.log('item', item);
 
-  //   Toast.showToast({
-  //     title: 'Deploy Initiated',
-  //     description:
-  //       'GitHub Workflows initiated. Refresh Workflow tab to view progress.',
-  //     // actions: [{
-  //     //   label: 'Say hi!',
-  //     //   onClick: () => console.log('Hello World!'),
-  //     // }],
-  //     type: Toast.TYPE.NORMAL
-  //   });
-  //   this.props.closeModal();
-  // }
+    const { userToken, githubUrl } = this.props;
+    const github = new Github({ userToken, githubUrl });
+    const path = `repos/newrelic/nr1-catalog/actions/runs/${run_id}/jobs`;
 
-  _onClickTableHeaderCell(key, event, sortingData) {
-    this.setState({ [key]: sortingData.nextSortingType });
+    const workflowJobs = await github.get(path);
+
+    console.log('workflowJobs', workflowJobs);
+
+    this.setState({
+      status: Status.DATA_FETCHED,
+      workflowJobs: workflowJobs
+    });
+  };
+
+  _onClose = () => {
+    this.setState({ hidden: true });
+  };
+
+  urlFormatter(cell, row) {
+    return (
+      <a
+        href={`https://github.com/newrelic/nr1-catalog/actions/runs/${cell}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {`https://github.com/newrelic/nr1-catalog/actions/runs/${cell}`}
+      </a>
+    );
   }
 
   renderWorkflowData() {
     const { workflow_runs: workflowRuns } = this.state.nr1CatalogWorkflows;
+    const { hidden, status } = this.state;
+
+    const { SearchBar } = Search;
+    const columns = [
+      {
+        dataField: 'run_number',
+        text: 'Run'
+      },
+      {
+        dataField: 'id',
+        text: 'Run ID'
+      },
+      {
+        dataField: 'status',
+        text: 'Status'
+      },
+      {
+        dataField: 'conclusion',
+        text: 'Conclusion'
+      },
+      {
+        dataField: 'workflow_id',
+        text: 'Workflow ID'
+      },
+      {
+        dataField: 'created_at',
+        text: 'Created At'
+      },
+      {
+        dataField: 'id',
+        text: 'Action Run URL',
+        formatter: this.urlFormatter
+      }
+    ];
+    const rowEvents = {
+      onClick: (e, row, rowIndex) => {
+        console.log(`clicked on row with index: ${rowIndex}`, row);
+        this.fetchWorkflowJobs(e, { item: row, index: rowIndex });
+      }
+    };
 
     console.log('workflows', workflowRuns);
     return (
       <div style={{ overflowX: 'auto' }}>
-        <Table
-          items={workflowRuns}
-          // selected={({ item }) => item.selected}
-          onSelect={(evt, { item }) => (item.selected = evt.target.checked)}
+        <ToolkitProvider
+          wrapperClasses="table-responsive"
+          keyField="id"
+          data={workflowRuns}
+          columns={columns}
+          search
         >
-          <TableHeader>
-            <TableHeaderCell
-              value={({ item }) => item.status}
-              sortable
-              sortingType={this.state.column_0}
-              sortingOrder={1}
-              onClick={this._onClickTableHeaderCell.bind(this, 'column_0')}
-            >
-              Status
-            </TableHeaderCell>
-            <TableHeaderCell
-              value={({ item }) => item.workflow_id}
-              sortable
-              sortingType={this.state.column_1}
-              sortingOrder={2}
-              onClick={this._onClickTableHeaderCell.bind(this, 'column_1')}
-            >
-              Workflow ID
-            </TableHeaderCell>
-            <TableHeaderCell
-              value={({ item }) => item.created_at}
-              sortable
-              sortingType={this.state.column_2}
-              sortingOrder={3}
-              onClick={this._onClickTableHeaderCell.bind(this, 'column_2')}
-            >
-              Created At
-            </TableHeaderCell>
-            <TableHeaderCell
-              value={({ item }) => item.created_at}
-              sortable
-              sortingType={this.state.column_2}
-              sortingOrder={3}
-              onClick={this._onClickTableHeaderCell.bind(this, 'column_3')}
-            >
-              Action Run
-            </TableHeaderCell>
-          </TableHeader>
-
-          {({ item }) => (
-            <TableRow>
-              <TableRowCell>{item.status}</TableRowCell>
-              <TableRowCell>{item.workflow_id}</TableRowCell>
-              <TableRowCell>{item.created_at}</TableRowCell>
-              <TableRowCell>
-                <a
-                  href={`https://github.com/newrelic/nr1-catalog/actions/runs/${item.id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {`https://github.com/newrelic/nr1-catalog/actions/runs/${item.id}`}
-                </a>
-              </TableRowCell>
-            </TableRow>
+          {props => (
+            <>
+              <SearchBar {...props.searchProps} />
+              <BootstrapTable {...props.baseProps} rowEvents={rowEvents} />
+            </>
           )}
-        </Table>
+        </ToolkitProvider>
+        <Modal hidden={this.state.hidden} onClose={this._onClose}>
+          {!hidden && status === Status.DATA_FETCHED && (
+            <>
+              {console.log(this.state.workflowJobs)}
+
+              {this.renderWorkflowJobs()}
+              <Button onClick={this._onClose} style={{ marginTop: '10px' }}>
+                Close
+              </Button>
+            </>
+          )}
+        </Modal>
+      </div>
+    );
+  }
+
+  renderWorkflowJobs() {
+    const { jobs } = this.state.workflowJobs;
+
+    const { SearchBar } = Search;
+    const columns = [
+      {
+        dataField: 'name',
+        text: 'Job'
+      },
+      {
+        dataField: 'status',
+        text: 'Status'
+      }
+    ];
+
+    return (
+      <div style={{ overflowX: 'auto' }}>
+        <ToolkitProvider
+          wrapperClasses="table-responsive"
+          keyField="id"
+          data={jobs}
+          columns={columns}
+          search
+        >
+          {props => (
+            <>
+              <SearchBar {...props.searchProps} />
+              <BootstrapTable {...props.baseProps} />
+            </>
+          )}
+        </ToolkitProvider>
       </div>
     );
   }
@@ -184,10 +211,6 @@ export default class Workflows extends PureComponent {
 
     if (status === Status.LOADING) return <Spinner />;
 
-    return (
-      <div className="">
-        {status === Status.DATA_FETCHED && this.renderWorkflowData()}
-      </div>
-    );
+    return <div className="">{this.renderWorkflowData()}</div>;
   }
 }
