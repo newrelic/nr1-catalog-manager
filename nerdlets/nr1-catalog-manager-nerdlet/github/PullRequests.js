@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import BootstrapTable from 'react-bootstrap-table-next';
+import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import { Query, ApolloProvider } from 'react-apollo';
 import {
   Spinner,
@@ -40,12 +42,27 @@ export default class PullRequests extends PureComponent {
 
   render() {
     const { userToken } = this.props;
-
+    const { SearchBar } = Search;
     const apClient = client(userToken);
 
     // if (!isSetup) {
     //   return <></>;
     // }
+
+    const columns = [
+      {
+        dataField: 'title',
+        text: 'Title'
+      },
+      {
+        dataField: 'author.login',
+        text: 'Author'
+      },
+      {
+        dataField: 'createdAt',
+        text: 'Created At'
+      }
+    ];
 
     return (
       <ApolloProvider client={apClient}>
@@ -65,23 +82,37 @@ export default class PullRequests extends PureComponent {
             // eslint-disable-next-line no-console
             console.debug('PRs2', repository);
 
+            const { nodes } = repository.pullRequests;
             return (
               <>
-                <div>
-                  <HeadingText
-                    spacingType={[HeadingText.SPACING_TYPE.OMIT]}
-                    className="heading"
-                  >
-                    Existing Open Pull Requests for <code>nr1-catalog</code>
-                  </HeadingText>
-                  {/* <TextField
-            autofocus
-            label="Name Search"
-            placeholder="Type to filter repos by name"
-            onChange={this.filterTable}
-          /> */}
-                  <div style={{ overflowX: 'auto' }}>
-                    <Table
+                {nodes.length === 0 ? (
+                  <div>No Pull Requests open</div>
+                ) : (
+                  <div>
+                    <HeadingText
+                      spacingType={[HeadingText.SPACING_TYPE.OMIT]}
+                      className="heading"
+                    >
+                      Existing Open Pull Requests for <code>nr1-catalog</code>
+                    </HeadingText>
+
+                    <div style={{ overflowX: 'auto' }}>
+                      <ToolkitProvider
+                        wrapperClasses="table-responsive"
+                        keyField="title"
+                        data={nodes}
+                        columns={columns}
+                        search
+                      >
+                        {props => (
+                          <>
+                            <SearchBar {...props.searchProps} />
+                            <BootstrapTable {...props.baseProps} />
+                          </>
+                        )}
+                      </ToolkitProvider>
+
+                      {/* <Table
                       items={repository.pullRequests.nodes}
                       // selected={({ item }) => item.selected}
                       onSelect={(evt, { item }) =>
@@ -134,9 +165,10 @@ export default class PullRequests extends PureComponent {
                           <TableRowCell>{item.createdAt}</TableRowCell>
                         </TableRow>
                       )}
-                    </Table>
+                    </Table> */}
+                    </div>
                   </div>
-                </div>
+                )}
               </>
               // <Repositories
               //   search={this._filterCatalogApps(search)}
