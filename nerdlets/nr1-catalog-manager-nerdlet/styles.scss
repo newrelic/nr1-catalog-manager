@@ -610,3 +610,59 @@ tr>td:not(.u-unstyleTd) {
   border-bottom: none;
   border-top: 4px solid #464e4e;
 }
+
+
+
+.project-screenshots-container {
+  position: relative;
+  margin-top: 20px;
+
+  &:after {
+    content: '';
+    width: 30px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-image: linear-gradient(to left, white, rgba(255, 255, 255, 0));
+  }
+}
+
+.project-screenshot-list {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  position: relative;
+  padding: 1px 5px 8px 1px;
+  margin-bottom: -5px;
+
+  list-style-type: none;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior: none;
+}
+
+.project-screenshot-list-item {
+  height: 130px;
+  flex: 0 0 auto;
+  line-height: 3px;
+  margin-right: 15px;
+  padding: 4px;
+  border-radius: 3px;
+  display: block;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+  scroll-snap-align: start;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:last-child {
+    position: relative;
+    z-index: 200;
+  }
+
+  img {
+    height: 100%;
+  }
+}

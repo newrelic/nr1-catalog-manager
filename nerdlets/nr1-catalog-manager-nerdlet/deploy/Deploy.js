@@ -14,6 +14,7 @@ import {
   Toast
 } from 'nr1';
 import get from 'lodash.get';
+import ValidateCatalog from '../github/ValidateCatalog';
 
 export default class Deploy extends React.Component {
   static propTypes = {
@@ -50,6 +51,11 @@ export default class Deploy extends React.Component {
     // this.handleSetGithubUrl = this.handleSetGithubUrl.bind(this);
     this.triggerWorkflowDispatch = this.triggerWorkflowDispatch.bind(this);
   }
+
+  triggerValidate = event => {
+    event.preventDefault();
+    this.setState({ status: 'VALIDATE' });
+  };
 
   async triggerWorkflowDispatch(event) {
     event.preventDefault();
@@ -197,12 +203,15 @@ export default class Deploy extends React.Component {
               >
                 Cancel
               </Button>
-              <Button
+              <Button type={Button.TYPE.PRIMARY} onClick={this.triggerValidate}>
+                Validate
+              </Button>
+              {/* <Button
                 type={Button.TYPE.PRIMARY}
                 onClick={this.triggerWorkflowDispatch}
               >
                 Deploy
-              </Button>
+              </Button> */}
             </StackItem>
             {/* <StackItem>
               
@@ -239,6 +248,17 @@ export default class Deploy extends React.Component {
       //     >
       <div className="deploy-modal">
         {userToken && this.renderWorkflowInputForm()}
+        {this.state.status === 'VALIDATE' && (
+          <div
+            className="project-screenshots-container"
+            // style={{ height: '100px', border: '1px solid red' }}
+          >
+            <ValidateCatalog
+              version={this.state.version}
+              repoName={repo.name}
+            />
+          </div>
+        )}
         {/* </Stack>
         </GridItem>
       </Grid> */}
