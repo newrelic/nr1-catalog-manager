@@ -197,6 +197,114 @@ export const PULL_REQUESTS_QUERY = gql`
   }
 `;
 
+// export const CATALOG_VALIDATION_QUERY = gql`
+//   query catalogValidationQuery($repoName: String!) {
+//     repository(name: $repoName, owner: "newrelic") {
+//       catalogJson: object(expression: "main:catalog/") {
+//         ... on Tree {
+//           entries {
+//             name
+//             object {
+//               ... on Blob {
+//                 text
+//                 isBinary
+//               }
+//             }
+//             extension
+//           }
+//         }
+//       }
+//       screenshots: object(expression: "main:catalog/screenshots/") {
+//         ... on Tree {
+//           entries {
+//             name
+//             extension
+//           }
+//         }
+//       }
+//     }
+//   }
+// `;
+
+export const CATALOG_VALIDATION_QUERY = gql`
+  query catalogValidationQuery($repoName: String!) {
+    repository(name: $repoName, owner: "newrelic") {
+      catalogJson: object(expression: "main:catalog/config.json") {
+        ... on Blob {
+          text
+          isBinary
+        }
+      }
+      documentationMd: object(expression: "main:catalog/documentation.md") {
+        ... on Blob {
+          text
+          isBinary
+        }
+      }
+      screenshots: object(expression: "main:catalog/screenshots/") {
+        ... on Tree {
+          entries {
+            name
+            extension
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const VALIDATION_QUERY = gql`
+  {
+    search(
+      query: "org:newrelic nr1-browser-analyzer fork:false archived:false is:public"
+      type: REPOSITORY
+      first: 100
+    ) {
+      repositoryCount
+      nodes {
+        ... on Repository {
+          catalogJson: object(expression: "main:catalog/") {
+            # oid
+            ... on Tree {
+              # id
+              entries {
+                name
+                object {
+                  ... on Blob {
+                    # id
+                    text
+                    isBinary
+                    # byteSize
+                  }
+                }
+                extension
+              }
+            }
+          }
+          screenshots: object(expression: "main:catalog/screenshots/") {
+            # oid
+            ... on Tree {
+              # id
+              entries {
+                name
+                # object {
+                # ... on Blob {
+                # id
+                # text
+                # isBinary
+                # byteSize
+                # }
+                # }
+                extension
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 // {
 //   search(query: "org:newrelic nr1 fork:false archived:false is:public", type: REPOSITORY, first: 100) {
 //     repositoryCount
