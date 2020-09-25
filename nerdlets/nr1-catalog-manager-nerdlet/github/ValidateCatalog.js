@@ -22,7 +22,7 @@ export default class ValidateCatalog extends PureComponent {
 
   onImgLoad({ target: img }) {
     console.log({
-      dimensions: { height: img.offsetHeight, width: img.offsetWidth }
+      dimensions: { height: img.naturalHeight, width: img.naturalWidth }
     });
   }
 
