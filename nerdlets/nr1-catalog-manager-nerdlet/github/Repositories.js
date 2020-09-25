@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import BootstrapTable from 'react-bootstrap-table-next';
+import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import {
   HeadingText,
   TextField,
@@ -54,12 +56,86 @@ export default class Repositories extends PureComponent {
     this.setState({ deploymentRepo: node, hidden: false });
   };
 
+  onImgLoad({ target: img }) {
+    console.log({
+      dimensions: { height: img.offsetHeight, width: img.offsetWidth }
+    });
+  }
+
   render() {
     const { search, viewer, filteredRepositories, hidden } = this.state;
     const { userToken } = this.props;
+
+    const { SearchBar } = Search;
+
+    // TODO: transform data before passing to BootstrapTable
+    const columns = [
+      {
+        dataField: 'name',
+        text: 'Name',
+        formatter: cell => (
+          <a href={cell.url} target="_blank" rel="noopener noreferrer">
+            {cell}
+          </a>
+        )
+      },
+      {
+        dataField: 'viewerPermission',
+        text: 'Permisson'
+      },
+      {
+        dataField: 'refs.nodes[0].name',
+        text: 'Latest Release',
+        formatter: cell => (!cell ? '-' : cell)
+      },
+      {
+        dataField: 'refs.nodes[0].target',
+        text: 'Commit SHA',
+        formatter: cell => {
+          const commitSha = get(cell, 'oid');
+          const commitShaUrl = get(cell, 'commitUrl');
+
+          return commitSha && commitShaUrl ? (
+            <a
+              href={commitShaUrl || ''}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {commitSha || ''}
+            </a>
+          ) : (
+            ''
+          );
+        }
+      },
+      {
+        dataField: 'refs.nodes[0].target.messageHeadline',
+        text: 'Commit Message',
+        formatter: cell => (!cell ? '-' : cell)
+      },
+      {
+        dataField: 'name',
+        text: 'Deploy',
+        formatter: cell => (
+          <Button
+            type={Button.TYPE.NORMAL}
+            sizeType={Button.SIZE_TYPE.SMALL}
+            onClick={() => this._openModal(cell)}
+          >
+            Deploy
+          </Button>
+        )
+      }
+    ];
+
     console.log(`hidden: ${hidden}`, search);
     return (
       <>
+        {/* <img
+          onLoad={this.onImgLoad}
+          src="https://raw.githubusercontent.com/newrelic/nr1-browser-analyzer/v1.3.5/catalog/screenshots/nr1-browser-analyzer-01.png"
+        /> */}
+        {/* <img src="https://raw.githubusercontent.com/newrelic/nr1-browser-analyzer/v1.3.5/catalog/screenshots/nr1-browser-analyzer-01.png" /> */}
         <div>
           <HeadingText
             spacingType={[HeadingText.SPACING_TYPE.OMIT]}
@@ -68,7 +144,7 @@ export default class Repositories extends PureComponent {
             Catalog Repository List for user:{' '}
             <strong style={{ color: '#038b99' }}>{viewer.login}</strong>
           </HeadingText>
-          <TextField
+          {/* <TextField
             autofocus
             label="Name Search"
             placeholder="Type to filter repos by name"
@@ -84,10 +160,6 @@ export default class Repositories extends PureComponent {
                   <th>Commit SHA</th>
                   <th>Commit Message</th>
                   <th>Deploy</th>
-                  {/* <th>Private?</th>
-                <th>Last Commit</th>
-                <th>Commit Comments Total Count</th>
-                <th>Total Commit Count</th> */}
                 </tr>
               </thead>
               <tbody>
@@ -140,18 +212,6 @@ export default class Repositories extends PureComponent {
                             Deploy
                           </Button>
                         </td>
-                        {/* <td>{node.isPrivate ? 'Y' : 'N'}</td>
-                      <td>
-                        <a
-                          href={node.defaultBranchRef.target.commitUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {node.defaultBranchRef.target.message}
-                        </a>
-                      </td>
-                      <td>{node.commitComments.totalCount}</td>
-                      <td>{node.defaultBranchRef.target.history.totalCount}</td> */}
                       </tr>
                     );
                   })
@@ -162,19 +222,30 @@ export default class Repositories extends PureComponent {
                 )}
               </tbody>
             </table>
-          </div>
+          </div> */}
         </div>
+        {filteredRepositories.length > 0 ? (
+          <ToolkitProvider
+            wrapperClasses="table-responsive"
+            keyField="id"
+            data={filteredRepositories}
+            columns={columns}
+            search
+          >
+            {props => (
+              <>
+                <SearchBar {...props.searchProps} />
+                <BootstrapTable {...props.baseProps} />
+              </>
+            )}
+          </ToolkitProvider>
+        ) : (
+          <tr style={{ backgroundColor: 'fff' }}>
+            <td colSpan="6">No data to display</td>
+          </tr>
+        )}
 
-        {/* <Button onClick={() => this.setState({ hidden: false })}>
-          Open Modal
-        </Button> */}
         <Modal hidden={this.state.hidden} onClose={this._onClose}>
-          {/* <HeadingText type={HeadingText.TYPE.HEADING_1}>Modal</HeadingText>
-          <BlockText type={BlockText.TYPE.PARAGRAPH}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Dictumst
-            quisque sagittis purus sit amet.
-          </BlockText> */}
           {!hidden && (
             <>
               <Deploy
@@ -186,9 +257,6 @@ export default class Repositories extends PureComponent {
                 userToken={userToken}
                 closeModal={this._onClose}
               />
-              {/* <Button onClick={this._onClose} style={{ marginTop: '10px' }}>
-                Close
-              </Button> */}
             </>
           )}
         </Modal>
