@@ -25,7 +25,9 @@ export default class Repositories extends PureComponent {
       search: props.search,
       viewer: props.viewer,
       searchValue: null,
-      filteredRepositories: props.search.nodes,
+      filteredRepositories: props.search.nodes.sort((a, b) =>
+        b.name < a.name ? 1 : -1
+      ),
       hidden: true
     };
   }
