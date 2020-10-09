@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/newrelic/nr1-catalog-manager/compare/v1.0.0...v1.0.1) (2020-10-09)
+
+
+### Bug Fixes
+
+* input field width ([3a8d68e](https://github.com/newrelic/nr1-catalog-manager/commit/3a8d68e04ac3c9270a3ae4257d87eb3911511695))
+
 # 1.0.0 (2020-10-09)
 
 
