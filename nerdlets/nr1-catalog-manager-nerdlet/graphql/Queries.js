@@ -227,21 +227,26 @@ export const PULL_REQUESTS_QUERY = gql`
 // `;
 
 export const CATALOG_VALIDATION_QUERY = gql`
-  query catalogValidationQuery($repoName: String!) {
+  query catalogValidationQuery(
+    $repoName: String!
+    $configExp: String!
+    $documentationExp: String!
+    $screenshotsExp: String!
+  ) {
     repository(name: $repoName, owner: "newrelic") {
-      catalogJson: object(expression: "main:catalog/config.json") {
+      configJson: object(expression: $configExp) {
         ... on Blob {
           text
           isBinary
         }
       }
-      documentationMd: object(expression: "main:catalog/documentation.md") {
+      documentationMd: object(expression: $documentationExp) {
         ... on Blob {
           text
           isBinary
         }
       }
-      screenshots: object(expression: "main:catalog/screenshots/") {
+      screenshots: object(expression: $screenshotsExp) {
         ... on Tree {
           entries {
             name
@@ -252,6 +257,12 @@ export const CATALOG_VALIDATION_QUERY = gql`
     }
   }
 `;
+
+export const EXPRESSIONS = version => ({
+  configExp: `${version}:catalog/config.json`,
+  documentationExp: `${version}:catalog/documentation.md`,
+  screenshotsExp: `${version}:catalog/screenshots`
+});
 
 export const VALIDATION_QUERY = gql`
   {
