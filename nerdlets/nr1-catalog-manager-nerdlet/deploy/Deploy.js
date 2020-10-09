@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Github from '../github/github-rest-client';
 import {
-  Grid,
-  GridItem,
   StackItem,
   Stack,
   TextField,
@@ -14,13 +12,13 @@ import {
   Toast
 } from 'nr1';
 import get from 'lodash.get';
-import ValidateCatalog from '../github/ValidateCatalog';
+import ValidateCatalog from './ValidateCatalog';
 
 export default class Deploy extends React.Component {
   static propTypes = {
     githubUrl: PropTypes.string,
     userToken: PropTypes.string,
-    isSetup: PropTypes.bool,
+    // isSetup: PropTypes.bool,
     repo: PropTypes.object,
     user: PropTypes.string,
     closeModal: PropTypes.func
@@ -37,8 +35,8 @@ export default class Deploy extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      userToken: props.userToken || '',
-      githubUrl: props.githubUrl || '',
+      // userToken: props.userToken || '',
+      // githubUrl: props.githubUrl || '',
       appName: props.repo.name, // props.appName || '',
       version: props.repo.refs.nodes[0].name, // props.version || '',
       ref: props.repo.refs.nodes[0].target.oid, // props.ref || '',
@@ -69,9 +67,10 @@ export default class Deploy extends React.Component {
     //   this.state.ref,
     //   this.state.user
     // );
-    const { userToken, githubUrl, repo } = this.props;
+    // const { userToken, githubUrl, repo } = this.props;
+    const { userToken, githubUrl } = this.props;
     const { appName, version, ref, user } = this.state;
-    console.log('DISPATCH:', this.state);
+    // console.log('DISPATCH:', this.state);
     const github = new Github({ userToken, githubUrl });
     // const path = `repos/jbeveland27/prototype-nr1-actions/actions/workflows/catalog.yml/dispatches`;
     const path = `repos/newrelic/${appName}/actions/workflows/catalog.yml/dispatches`;
@@ -103,7 +102,11 @@ export default class Deploy extends React.Component {
         <Select
           onChange={(event, value) => {
             const ref = repo.refs.nodes.find(r => r.name === value);
-            this.setState({ ref: ref.target.oid, version: value });
+            this.setState({
+              ref: ref.target.oid,
+              version: value,
+              status: 'REVALIDATE'
+            });
           }}
           value={this.state.version}
           label="Version"
@@ -164,38 +167,6 @@ export default class Deploy extends React.Component {
                 <SelectItem value="c">Value is "c"</SelectItem>
               </Select> */}
               {this.renderRefs()}
-              {/* <TextField
-                autofocus
-                label="Version"
-                placeholder="version"
-                onChange={({ target }) => {
-                  this.setState({ version: target.value });
-                }}
-              />
-              <TextField
-                autofocus
-                label="Commit SHA"
-                placeholder="commit sha"
-                onChange={({ target }) => {
-                  this.setState({ ref: target.value });
-                }}
-              /> */}
-              {/* <TextField
-                autofocus
-                label="User"
-                placeholder="user"
-                onChange={({ target }) => {
-                  this.setState({ user: target.value });
-                }}
-              /> */}
-              {/* <Button
-                style={{ marginTop: '20px' }}
-                onClick={this.triggerWorkflowDispatch}
-                // disabled={!userToken || userToken.length !== 40}
-                type="primary"
-              >
-                Trigger Workflow
-              </Button> */}
 
               <Button
                 type={Button.TYPE.Secondary}
@@ -206,16 +177,7 @@ export default class Deploy extends React.Component {
               <Button type={Button.TYPE.PRIMARY} onClick={this.triggerValidate}>
                 Validate
               </Button>
-              {/* <Button
-                type={Button.TYPE.PRIMARY}
-                onClick={this.triggerWorkflowDispatch}
-              >
-                Deploy
-              </Button> */}
             </StackItem>
-            {/* <StackItem>
-              
-            </StackItem> */}
           </Stack>
         </form>
       </StackItem>
@@ -224,28 +186,11 @@ export default class Deploy extends React.Component {
 
   render() {
     const { userToken, repo } = this.props;
-    console.log('deploymentRepo:', repo);
-    console.log('State:', this.state);
-    // console.log(userToken);
-    // const apClient = client(userToken);
 
-    // console.log(`Setup? ${isSetup}`);
-    // if (!isSetup) {
-    //   return <></>;
-    // }
-
-    // if (!isSetup) {
-    //   return <></>;
-    // }
+    // console.log('deploymentRepo:', repo);
+    // console.log('State:', this.state);
 
     return (
-      // <Grid className="container integration-container">
-      //   <GridItem columnSpan={12}>
-      //     <Stack
-      //       directionType="vertical"
-      //       gapType={Stack.GAP_TYPE.EXTRA_LOOSE}
-      //       fullWidth
-      //     >
       <div className="deploy-modal">
         {userToken && this.renderWorkflowInputForm()}
         {this.state.status === 'VALIDATE' && (
@@ -256,12 +201,11 @@ export default class Deploy extends React.Component {
             <ValidateCatalog
               version={this.state.version}
               repoName={repo.name}
+              triggerWorkflowDispatch={this.triggerWorkflowDispatch}
+              closeModal={this.props.closeModal}
             />
           </div>
         )}
-        {/* </Stack>
-        </GridItem>
-      </Grid> */}
       </div>
     );
   }
