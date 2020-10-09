@@ -6,9 +6,14 @@ h2 {
 
 .root {
   background-color: #f7f7f8;
-  padding: 24px;
+  // padding: 24px 0;
   height: 100%;
   border-top: 1px solid #edeeee;
+  font-family: Open Sans, Segoe UI, Tahoma, sans-serif;
+}
+
+#root  {
+  font-family: Open Sans, Segoe UI, Tahoma, sans-serif;
 }
 
 .header {
@@ -614,7 +619,7 @@ tr>td:not(.u-unstyleTd) {
 
 
 .project-screenshots-container {
-  position: relative;
+  // position: relative;
   margin-top: 20px;
 
   &:after {
@@ -665,4 +670,55 @@ tr>td:not(.u-unstyleTd) {
   img {
     height: 100%;
   }
+}
+
+.validation {
+  width: 100%;
+  border-top: 1px solid #c7c7c7;
+}
+.validation-container {
+  
+  display: flex;
+  
+  width: 100%;
+  border: 1px solid #d5d7d7;
+  border-radius: 3px;
+  min-height: 35px;
+  position: relative;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.02);
+  transition: all .05s ease-in-out;
+  margin-bottom: 12px;
+}
+
+.validation-header {
+  padding-bottom: 0;
+  padding-top: 0;
+  font-size: 18px;
+  color: #000e0e;
+  text-align: left;
+  line-height: 19px;
+  text-transform: none;
+  font-weight: 600;
+  letter-spacing: 0px;
+  margin: 14px 0;
+}
+
+.item-symbol {
+  width: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px dotted #b9bdbd;
+}
+
+.item-title {
+  display: block;
+  width: 100%;
+  padding: 0 8px;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 35px;
+  font-size: 12px;
+  white-space: nowrap;
 }
