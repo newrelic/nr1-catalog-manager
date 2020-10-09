@@ -116,6 +116,7 @@ export default class Auth extends PureComponent {
                       onChange={({ target }) => {
                         this.setState({ userToken: target.value });
                       }}
+                      className="fullWidth"
                     />
                   </StackItem>
                   <StackItem>
