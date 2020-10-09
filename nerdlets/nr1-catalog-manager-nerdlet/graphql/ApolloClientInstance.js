@@ -1,10 +1,19 @@
+/* eslint-disable no-console */
 import { ApolloClient } from 'apollo-client';
 import { ApolloLink } from 'apollo-link';
 import { HttpLink } from 'apollo-link-http';
 import { onError } from 'apollo-link-error';
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import {
+  InMemoryCache,
+  IntrospectionFragmentMatcher
+} from 'apollo-cache-inmemory';
+import introspectionQueryResultData from './fragmentTypes.json';
 
 const GITHUB_BASE_URL = 'https://api.github.com/graphql';
+
+const fragmentMatcher = new IntrospectionFragmentMatcher({
+  introspectionQueryResultData
+});
 
 /**
  * Instantiates a new ApolloClient that utilizes the userToken for authorization
@@ -15,11 +24,14 @@ export const client = userToken => {
     link: ApolloLink.from([
       onError(({ graphQLErrors, networkError }) => {
         if (graphQLErrors) {
-          console.error('GRAPHQL_ERR::>', graphQLErrors);
-          console.error();
+          graphQLErrors.map(({ message, locations, path }) =>
+            console.error(
+              `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+            )
+          );
         }
         if (networkError) {
-          console.error('NETWORK_ERR::>', networkError);
+          console.error(`[Network error]: ${networkError}`);
         }
       }),
       new HttpLink({
@@ -29,6 +41,8 @@ export const client = userToken => {
         }
       })
     ]),
-    cache: new InMemoryCache()
+    cache: new InMemoryCache({
+      fragmentMatcher
+    })
   });
 };
