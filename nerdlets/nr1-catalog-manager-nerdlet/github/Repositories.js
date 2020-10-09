@@ -2,21 +2,15 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import BootstrapTable from 'react-bootstrap-table-next';
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
-import {
-  HeadingText,
-  TextField,
-  Button,
-  BlockText,
-  Modal,
-  Table,
-  TableRow
-} from 'nr1';
+import { HeadingText, Button, Modal } from 'nr1';
 import get from 'lodash.get';
 import Deploy from '../deploy/Deploy';
 
 export default class Repositories extends PureComponent {
   static propTypes = {
-    userToken: PropTypes.string
+    userToken: PropTypes.string,
+    search: PropTypes.object,
+    viewer: PropTypes.object
   };
 
   constructor(props) {
@@ -24,7 +18,7 @@ export default class Repositories extends PureComponent {
     this.state = {
       search: props.search,
       viewer: props.viewer,
-      searchValue: null,
+      // searchValue: null,
       filteredRepositories: props.search.nodes.sort((a, b) =>
         b.name < a.name ? 1 : -1
       ),
@@ -36,36 +30,37 @@ export default class Repositories extends PureComponent {
    * Helper function for setting the filtered table content used
    * with the name search field
    */
-  filterTable = event => {
-    this.setState({
-      searchValue: event.target.value,
-      filteredRepositories: this.state.search.nodes.filter(curr => {
-        return curr.name.includes(event.target.value);
-      })
-    });
-  };
+  // filterTable = event => {
+  //   this.setState({
+  //     searchValue: event.target.value,
+  //     filteredRepositories: this.state.search.nodes.filter(curr => {
+  //       return curr.name.includes(event.target.value);
+  //     })
+  //   });
+  // };
 
   _onClose = () => {
     this.setState({ hidden: true });
   };
 
   _openModal = selectedRepo => {
-    console.log(selectedRepo);
-    const node = this.state.search.nodes.find(n => {
+    // console.log(selectedRepo);
+    const { search } = this.state;
+    const node = search.nodes.find(n => {
       return n.name === selectedRepo;
     });
-    console.log('node: ', node);
+    // console.log('node: ', node);
     this.setState({ deploymentRepo: node, hidden: false });
   };
 
-  onImgLoad({ target: img }) {
-    console.log({
-      dimensions: { height: img.offsetHeight, width: img.offsetWidth }
-    });
-  }
+  // onImgLoad({ target: img }) {
+  //   console.log({
+  //     dimensions: { height: img.offsetHeight, width: img.offsetWidth }
+  //   });
+  // }
 
   render() {
-    const { search, viewer, filteredRepositories, hidden } = this.state;
+    const { viewer, filteredRepositories, hidden } = this.state;
     const { userToken } = this.props;
 
     const { SearchBar } = Search;
@@ -117,20 +112,19 @@ export default class Repositories extends PureComponent {
       },
       {
         dataField: 'name',
-        text: 'Deploy',
+        text: 'Action',
         formatter: cell => (
           <Button
             type={Button.TYPE.NORMAL}
             sizeType={Button.SIZE_TYPE.SMALL}
             onClick={() => this._openModal(cell)}
           >
-            Deploy
+            Update
           </Button>
         )
       }
     ];
 
-    console.log(`hidden: ${hidden}`, search);
     return (
       <>
         {/* <img
@@ -253,7 +247,7 @@ export default class Repositories extends PureComponent {
               <Deploy
                 githubUrl="https://api.github.com/"
                 // setUserToken={this._setUserToken}
-                isSetup
+                // isSetup
                 repo={this.state.deploymentRepo}
                 user={this.state.viewer.login}
                 userToken={userToken}

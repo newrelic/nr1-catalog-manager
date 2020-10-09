@@ -3,26 +3,7 @@ import PropTypes from 'prop-types';
 import Github from './github-rest-client';
 import BootstrapTable from 'react-bootstrap-table-next';
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
-import {
-  Grid,
-  GridItem,
-  StackItem,
-  Stack,
-  TextField,
-  Button,
-  Select,
-  SelectItem,
-  HeadingText,
-  Toast,
-  Spinner,
-  Table,
-  TableHeader,
-  TableHeaderCell,
-  TableRow,
-  TableRowCell,
-  Modal
-} from 'nr1';
-import get from 'lodash.get';
+import { Button, Spinner, Modal } from 'nr1';
 
 import Status from '../constants/Status';
 
@@ -45,12 +26,11 @@ export default class Workflows extends PureComponent {
     const { userToken, githubUrl } = this.props;
 
     const github = new Github({ userToken, githubUrl });
-
     const nr1_catalog_path = `repos/newrelic/nr1-catalog/actions/workflows/generate-catalog-pr.yml/runs`;
 
     const nr1_catalog_runs = await github.get(nr1_catalog_path);
 
-    console.log('nr1_catalog_runs', nr1_catalog_runs);
+    // console.log('nr1_catalog_runs', nr1_catalog_runs);
 
     this.setState({
       status: Status.DATA_FETCHED,
@@ -58,12 +38,11 @@ export default class Workflows extends PureComponent {
     });
   }
 
-  fetchWorkflowJobs = async (event, { item, index }) => {
-    console.log('item', item);
+  fetchWorkflowJobs = async (event, { item }) => {
     this.setState({ hidden: false, status: Status.FETCHING });
+    // console.log('item', item);
 
     const { id: run_id } = item;
-    console.log('item', item);
 
     const { userToken, githubUrl } = this.props;
     const github = new Github({ userToken, githubUrl });
@@ -71,7 +50,7 @@ export default class Workflows extends PureComponent {
 
     const workflowJobs = await github.get(path);
 
-    console.log('workflowJobs', workflowJobs);
+    // console.log('workflowJobs', workflowJobs);
 
     this.setState({
       status: Status.DATA_FETCHED,
@@ -83,7 +62,7 @@ export default class Workflows extends PureComponent {
     this.setState({ hidden: true });
   };
 
-  urlFormatter(cell, row) {
+  urlFormatter(cell) {
     return (
       <a
         href={`https://github.com/newrelic/nr1-catalog/actions/runs/${cell}`}
@@ -133,12 +112,11 @@ export default class Workflows extends PureComponent {
     ];
     const rowEvents = {
       onClick: (e, row, rowIndex) => {
-        console.log(`clicked on row with index: ${rowIndex}`, row);
         this.fetchWorkflowJobs(e, { item: row, index: rowIndex });
       }
     };
 
-    console.log('workflows', workflowRuns);
+    // console.log('workflows', workflowRuns);
     return (
       <div style={{ overflowX: 'auto' }}>
         <ToolkitProvider
@@ -158,7 +136,7 @@ export default class Workflows extends PureComponent {
         <Modal hidden={this.state.hidden} onClose={this._onClose}>
           {!hidden && status === Status.DATA_FETCHED && (
             <>
-              {console.log(this.state.workflowJobs)}
+              {/* {console.log(this.state.workflowJobs)} */}
 
               {this.renderWorkflowJobs()}
               <Button onClick={this._onClose} style={{ marginTop: '10px' }}>

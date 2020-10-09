@@ -3,25 +3,11 @@ import PropTypes from 'prop-types';
 import BootstrapTable from 'react-bootstrap-table-next';
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import { Query, ApolloProvider } from 'react-apollo';
-import {
-  Spinner,
-  HeadingText,
-  TextField,
-  Button,
-  BlockText,
-  Modal,
-  Table,
-  TableHeader,
-  TableHeaderCell,
-  TableRow,
-  TableRowCell
-} from 'nr1';
+import { Spinner, HeadingText } from 'nr1';
 
 import ErrorMessage from '../graphql/ErrorMessage';
 import { client } from '../graphql/ApolloClientInstance';
 import { PULL_REQUESTS_QUERY } from '../graphql/Queries';
-
-import get from 'lodash.get';
 
 export default class PullRequests extends PureComponent {
   static propTypes = {
@@ -32,13 +18,13 @@ export default class PullRequests extends PureComponent {
     super(props);
 
     this.state = {
-      column_0: TableHeaderCell.SORTING_TYPE.ASCENDING
+      // column_0: TableHeaderCell.SORTING_TYPE.ASCENDING
     };
   }
 
-  _onClickTableHeaderCell(key, event, sortingData) {
-    this.setState({ [key]: sortingData.nextSortingType });
-  }
+  // _onClickTableHeaderCell(key, event, sortingData) {
+  //   this.setState({ [key]: sortingData.nextSortingType });
+  // }
 
   render() {
     const { userToken } = this.props;
@@ -71,8 +57,8 @@ export default class PullRequests extends PureComponent {
             if (error) {
               return <ErrorMessage error={error} />;
             }
-            console.log('PRs', data);
-            // const { viewer } = data;
+
+            // console.log('PRs', data);
             const { repository } = data;
 
             if (loading || !repository) {

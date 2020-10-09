@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unused-state */
+/* eslint-disable no-console */
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Grid, GridItem, TextField, Button, Stack, StackItem } from 'nr1';

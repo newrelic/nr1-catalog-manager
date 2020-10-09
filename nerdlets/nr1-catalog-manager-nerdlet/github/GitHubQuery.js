@@ -6,7 +6,7 @@ import { Spinner } from 'nr1';
 import Repositories from './Repositories';
 import ErrorMessage from '../graphql/ErrorMessage';
 import { client } from '../graphql/ApolloClientInstance';
-import { CATALOG_REPOS_QUERY, USER_REPOS_QUERY } from '../graphql/Queries';
+import { CATALOG_REPOS_QUERY } from '../graphql/Queries';
 
 export default class GitHubQuery extends React.Component {
   static propTypes = {
