@@ -36,7 +36,7 @@ export default class Repositories extends PureComponent {
     this.setState({ hidden: true });
   };
 
-  _openModal = selectedRepo => {
+  _openModal = (selectedRepo, action) => {
     const { catalogRepos } = this.props;
     const node = catalogRepos.nodes.find(n => {
       return n.name === selectedRepo;
@@ -44,7 +44,7 @@ export default class Repositories extends PureComponent {
     // console.log(`[selectedRepo]: ${selectedRepo}`);
     // console.log('[node]', node);
 
-    this.setState({ deploymentRepo: node, hidden: false });
+    this.setState({ deploymentRepo: node, action: action, hidden: false });
   };
 
   _getColumns = globals => {
@@ -109,7 +109,7 @@ export default class Repositories extends PureComponent {
               type={Button.TYPE.PRIMARY}
               sizeType={Button.SIZE_TYPE.MEDIUM}
               iconType={Button.ICON_TYPE.INTERFACE__OPERATIONS__REFRESH}
-              onClick={() => this._openModal(cell)}
+              onClick={() => this._openModal(cell, 'update')}
               style={{ width: '98px' }}
             >
               Update
@@ -119,7 +119,7 @@ export default class Repositories extends PureComponent {
               type={Button.TYPE.PRIMARY}
               iconType={Button.ICON_TYPE.INTERFACE__SIGN__PLUS}
               sizeType={Button.SIZE_TYPE.MEDIUM}
-              onClick={() => this._openModal(cell)}
+              onClick={() => this._openModal(cell, 'add')}
               style={{ width: '98px' }}
             >
               Add
@@ -130,7 +130,7 @@ export default class Repositories extends PureComponent {
   };
 
   render() {
-    const { hidden, deploymentRepo } = this.state;
+    const { hidden, deploymentRepo, action } = this.state;
     const { userToken, globals, catalogRepos, viewer } = this.props;
     const { versions } = globals;
 
@@ -157,6 +157,7 @@ export default class Repositories extends PureComponent {
             <Deploy
               githubUrl="https://api.github.com/"
               repo={deploymentRepo}
+              action={action}
               user={viewer.login}
               userToken={userToken}
               closeModal={this._onClose}

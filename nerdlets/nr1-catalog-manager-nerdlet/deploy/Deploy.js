@@ -21,7 +21,8 @@ export default class Deploy extends React.Component {
     // isSetup: PropTypes.bool,
     repo: PropTypes.object,
     user: PropTypes.string,
-    closeModal: PropTypes.func
+    closeModal: PropTypes.func,
+    action: PropTypes.string
     // setUserToken: PropTypes.func.isRequired
   };
   // static propTypes = {
@@ -68,8 +69,9 @@ export default class Deploy extends React.Component {
     //   this.state.user
     // );
     // const { userToken, githubUrl, repo } = this.props;
-    const { userToken, githubUrl } = this.props;
+    const { userToken, githubUrl, action, repo } = this.props;
     const { appName, version, ref, user } = this.state;
+    const { url } = repo;
     // console.log('DISPATCH:', this.state);
     const github = new Github({ userToken, githubUrl });
     // const path = `repos/jbeveland27/prototype-nr1-actions/actions/workflows/catalog.yml/dispatches`;
@@ -77,7 +79,7 @@ export default class Deploy extends React.Component {
 
     await github.post(path, {
       ref: 'main',
-      inputs: { appName, version, ref, user }
+      inputs: { appName, version, ref, user, action, url }
     });
 
     Toast.showToast({
@@ -124,14 +126,14 @@ export default class Deploy extends React.Component {
   }
 
   renderWorkflowInputForm() {
-    // const { userToken } = this.state;
-    // const { setUserToken } = this.props;
-    // const GHURL = this._getGithubUrl();
-    const { repo } = this.props;
+    const { repo, action } = this.props;
     return (
       <StackItem grow style={{ width: '100%' }}>
-        {/* <h2>Trigger Workflow Dispatch</h2> */}
-        <HeadingText>Initiate Catalog Deployment</HeadingText>
+        {action === 'add' ? (
+          <HeadingText>New Catalog Application</HeadingText>
+        ) : (
+          <HeadingText>Update Catalog Application</HeadingText>
+        )}
         <p>
           Select version to deploy to catalog. This will open a Pull Request in{' '}
           <a
@@ -144,11 +146,7 @@ export default class Deploy extends React.Component {
           and initiate the review process.
         </p>
         <form onSubmit={this.triggerWorkflowDispatch}>
-          <Stack
-            fullWidth
-            verticalType={Stack.VERTICAL_TYPE.BOTTOM}
-            // className="integration-input-container"
-          >
+          <Stack fullWidth verticalType={Stack.VERTICAL_TYPE.BOTTOM}>
             <StackItem grow>
               <TextField
                 autofocus
@@ -157,15 +155,7 @@ export default class Deploy extends React.Component {
                 placeholder={repo.name}
                 disabled
                 className="text-field"
-                // onChange={({ target }) => {
-                //   this.setState({ appName: target.value });
-                // }}
               />
-              {/* <Select onChange={(evt, value) => alert(value)}>
-                <SelectItem value="a">Value is "a"</SelectItem>
-                <SelectItem value="b">Value is "b"</SelectItem>
-                <SelectItem value="c">Value is "c"</SelectItem>
-              </Select> */}
               {this.renderRefs()}
 
               <Button
