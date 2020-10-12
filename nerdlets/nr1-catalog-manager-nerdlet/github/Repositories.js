@@ -1,72 +1,57 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import BootstrapTable from 'react-bootstrap-table-next';
-import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import { HeadingText, Button, Modal } from 'nr1';
 import get from 'lodash.get';
 import Deploy from '../deploy/Deploy';
 
+import SearchTable from '../../shared/components/search-table';
+
 export default class Repositories extends PureComponent {
   static propTypes = {
     userToken: PropTypes.string,
-    search: PropTypes.object,
-    viewer: PropTypes.object
+    catalogRepos: PropTypes.object,
+    viewer: PropTypes.object,
+    globals: PropTypes.object
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      search: props.search,
-      viewer: props.viewer,
-      // searchValue: null,
-      filteredRepositories: props.search.nodes.sort((a, b) =>
-        b.name < a.name ? 1 : -1
-      ),
       hidden: true
     };
   }
 
-  /**
-   * Helper function for setting the filtered table content used
-   * with the name search field
-   */
-  // filterTable = event => {
-  //   this.setState({
-  //     searchValue: event.target.value,
-  //     filteredRepositories: this.state.search.nodes.filter(curr => {
-  //       return curr.name.includes(event.target.value);
-  //     })
-  //   });
-  // };
+  _transformRepositories = (catalogRepos, versions) => {
+    versions = JSON.parse(versions?.text);
+    return catalogRepos.nodes
+      .map(n => ({
+        ...n,
+        name_action: n.name,
+        catalogVersion: versions[n.name]
+      }))
+      .sort((a, b) => (b.name < a.name ? 1 : -1));
+  };
 
   _onClose = () => {
     this.setState({ hidden: true });
   };
 
   _openModal = selectedRepo => {
-    // console.log(selectedRepo);
-    const { search } = this.state;
-    const node = search.nodes.find(n => {
+    const { catalogRepos } = this.props;
+    const node = catalogRepos.nodes.find(n => {
       return n.name === selectedRepo;
     });
-    // console.log('node: ', node);
+    // console.log(`[selectedRepo]: ${selectedRepo}`);
+    // console.log('[node]', node);
+
     this.setState({ deploymentRepo: node, hidden: false });
   };
 
-  // onImgLoad({ target: img }) {
-  //   console.log({
-  //     dimensions: { height: img.offsetHeight, width: img.offsetWidth }
-  //   });
-  // }
+  _getColumns = globals => {
+    const globalUUIDs = JSON.parse(globals?.globalUUIDs?.text);
+    // console.log('globalUUIDs', globalUUIDs);
 
-  render() {
-    const { viewer, filteredRepositories, hidden } = this.state;
-    const { userToken } = this.props;
-
-    const { SearchBar } = Search;
-
-    // TODO: transform data before passing to BootstrapTable
-    const columns = [
+    return [
       {
         dataField: 'name',
         text: 'Name',
@@ -79,6 +64,11 @@ export default class Repositories extends PureComponent {
       {
         dataField: 'viewerPermission',
         text: 'Permisson'
+      },
+      {
+        dataField: 'catalogVersion',
+        text: 'Current Catalog Version',
+        formatter: cell => (!cell ? '-' : cell)
       },
       {
         dataField: 'refs.nodes[0].name',
@@ -111,149 +101,66 @@ export default class Repositories extends PureComponent {
         formatter: cell => (!cell ? '-' : cell)
       },
       {
-        dataField: 'name',
+        dataField: 'name_action', // dataField is required, so just using the id field as a placeholder
         text: 'Action',
-        formatter: cell => (
-          <Button
-            type={Button.TYPE.NORMAL}
-            sizeType={Button.SIZE_TYPE.SMALL}
-            onClick={() => this._openModal(cell)}
-          >
-            Update
-          </Button>
-        )
+        formatter: cell =>
+          cell in globalUUIDs ? (
+            <Button
+              type={Button.TYPE.PRIMARY}
+              sizeType={Button.SIZE_TYPE.MEDIUM}
+              iconType={Button.ICON_TYPE.INTERFACE__OPERATIONS__REFRESH}
+              onClick={() => this._openModal(cell)}
+              style={{ width: '98px' }}
+            >
+              Update
+            </Button>
+          ) : (
+            <Button
+              type={Button.TYPE.PRIMARY}
+              iconType={Button.ICON_TYPE.INTERFACE__SIGN__PLUS}
+              sizeType={Button.SIZE_TYPE.MEDIUM}
+              onClick={() => this._openModal(cell)}
+              style={{ width: '98px' }}
+            >
+              Add
+            </Button>
+          )
       }
     ];
+  };
+
+  render() {
+    const { hidden, deploymentRepo } = this.state;
+    const { userToken, globals, catalogRepos, viewer } = this.props;
+    const { versions } = globals;
+
+    // TODO: transform data before passing to BootstrapTable
 
     return (
       <>
-        {/* <img
-          onLoad={this.onImgLoad}
-          src="https://raw.githubusercontent.com/newrelic/nr1-browser-analyzer/v1.3.5/catalog/screenshots/nr1-browser-analyzer-01.png"
-        /> */}
-        {/* <img src="https://raw.githubusercontent.com/newrelic/nr1-browser-analyzer/v1.3.5/catalog/screenshots/nr1-browser-analyzer-01.png" /> */}
         <div>
           <HeadingText
             spacingType={[HeadingText.SPACING_TYPE.OMIT]}
             className="heading"
           >
             Catalog Repository List for user:{' '}
-            <strong style={{ color: '#038b99' }}>{viewer.login}</strong>
+            <strong style={{ color: '#008c99' }}>{viewer.login}</strong>
           </HeadingText>
-          {/* <TextField
-            autofocus
-            label="Name Search"
-            placeholder="Type to filter repos by name"
-            onChange={this.filterTable}
-          />
-          <div style={{ overflowX: 'auto' }}>
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Permisson</th>
-                  <th>Latest Release</th>
-                  <th>Commit SHA</th>
-                  <th>Commit Message</th>
-                  <th>Deploy</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredRepositories.length > 0 ? (
-                  filteredRepositories.map((node, i) => {
-                    const releaseName = get(node, 'refs.nodes[0].name');
-                    const commitSha = get(node, 'refs.nodes[0].target.oid');
-                    const commitShaUrl = get(
-                      node,
-                      'refs.nodes[0].target.commitUrl'
-                    );
-                    const commitMessage = get(
-                      node,
-                      'refs.nodes[0].target.messageHeadline'
-                    );
-
-                    return (
-                      <tr key={i}>
-                        <td>
-                          <a
-                            href={node.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {node.name}
-                          </a>
-                        </td>
-                        <td>{node.viewerPermission}</td>
-                        <td>{releaseName || ''}</td>
-                        <td>
-                          {commitSha && commitShaUrl ? (
-                            <a
-                              href={commitShaUrl || ''}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {commitSha || ''}
-                            </a>
-                          ) : (
-                            ''
-                          )}
-                        </td>
-                        <td> {commitMessage}</td>
-                        <td>
-                          <Button
-                            type={Button.TYPE.NORMAL}
-                            sizeType={Button.SIZE_TYPE.SMALL}
-                            onClick={() => this._openModal(node.name)}
-                          >
-                            Deploy
-                          </Button>
-                        </td>
-                      </tr>
-                    );
-                  })
-                ) : (
-                  <tr style={{ backgroundColor: 'fff' }}>
-                    <td colSpan="6">No data to display</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div> */}
         </div>
-        {filteredRepositories.length > 0 ? (
-          <ToolkitProvider
-            wrapperClasses="table-responsive"
-            keyField="id"
-            data={filteredRepositories}
-            columns={columns}
-            search
-          >
-            {props => (
-              <>
-                <SearchBar {...props.searchProps} />
-                <BootstrapTable {...props.baseProps} />
-              </>
-            )}
-          </ToolkitProvider>
-        ) : (
-          <tr style={{ backgroundColor: 'fff' }}>
-            <td colSpan="6">No data to display</td>
-          </tr>
-        )}
+        <SearchTable
+          data={this._transformRepositories(catalogRepos, versions)}
+          columns={this._getColumns(globals)}
+        />
 
         <Modal hidden={this.state.hidden} onClose={this._onClose}>
           {!hidden && (
-            <>
-              <Deploy
-                githubUrl="https://api.github.com/"
-                // setUserToken={this._setUserToken}
-                // isSetup
-                repo={this.state.deploymentRepo}
-                user={this.state.viewer.login}
-                userToken={userToken}
-                closeModal={this._onClose}
-              />
-            </>
+            <Deploy
+              githubUrl="https://api.github.com/"
+              repo={deploymentRepo}
+              user={viewer.login}
+              userToken={userToken}
+              closeModal={this._onClose}
+            />
           )}
         </Modal>
       </>

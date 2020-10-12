@@ -11,25 +11,23 @@ import { CATALOG_REPOS_QUERY } from '../graphql/Queries';
 export default class GitHubQuery extends React.Component {
   static propTypes = {
     userToken: PropTypes.string
-    // isSetup: PropTypes.bool
   };
 
-  _filterCatalogApps(search) {
+  /**
+   * Filters the nr1Repos to return only those that have a catalog directory
+   * @param {*} nr1Repos The full set of repos returned from the CATALOG_REPOS_QUERY
+   */
+  _getCatalogRepos(nr1Repos) {
     return {
-      ...search,
-      nodes: search.nodes.filter(n => n.catalog)
+      ...nr1Repos,
+      nodes: nr1Repos.nodes.filter(n => n.catalog)
     };
   }
 
   render() {
-    // const { isSetup, userToken } = this.props;
     const { userToken } = this.props;
 
     const apClient = client(userToken);
-
-    // if (!isSetup) {
-    //   return <></>;
-    // }
 
     return (
       <ApolloProvider client={apClient}>
@@ -39,24 +37,23 @@ export default class GitHubQuery extends React.Component {
               return <ErrorMessage error={error} />;
             }
 
-            // const { viewer } = data;
-            const { search, viewer } = data;
+            const { nr1Repos, viewer, globals } = data;
 
-            if (loading || !search) {
+            if (loading || !nr1Repos || !viewer || !globals) {
               return <Spinner fillContainer style={{ height: '100vh' }} />;
             }
 
             // eslint-disable-next-line no-console
-            console.debug(search);
+            console.debug('CATALOG_REPOS_QUERY', data);
 
             return (
               <Repositories
-                search={this._filterCatalogApps(search)}
+                catalogRepos={this._getCatalogRepos(nr1Repos)}
                 viewer={viewer}
+                globals={globals}
                 userToken={userToken}
               />
             );
-            // return <Spinner fillContainer />;
           }}
         </Query>
       </ApolloProvider>
