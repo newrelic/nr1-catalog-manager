@@ -64,7 +64,7 @@ export const ACCESS_CHECK_QUERY = gql`
 
 export const CATALOG_REPOS_QUERY = gql`
   {
-    search(
+    nr1Repos: search(
       query: "org:newrelic nr1 fork:false archived:false is:public"
       type: REPOSITORY
       first: 100
@@ -86,7 +86,7 @@ export const CATALOG_REPOS_QUERY = gql`
           # }
           refs(
             refPrefix: "refs/tags/"
-            last: 25
+            first: 25
             orderBy: { field: TAG_COMMIT_DATE, direction: DESC }
           ) {
             nodes {
@@ -112,6 +112,18 @@ export const CATALOG_REPOS_QUERY = gql`
     }
     viewer {
       login
+    }
+    globals: repository(name: "nr1-catalog", owner: "newrelic") {
+      globalUUIDs: object(expression: "master:globals.json") {
+        ... on Blob {
+          text
+        }
+      }
+      versions: object(expression: "master:versions.json") {
+        ... on Blob {
+          text
+        }
+      }
     }
   }
 `;
