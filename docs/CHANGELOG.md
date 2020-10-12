@@ -1,3 +1,11 @@
+# [1.1.0](https://github.com/newrelic/nr1-catalog-manager/compare/v1.0.1...v1.1.0) (2020-10-12)
+
+
+### Features
+
+* cleanup state/props usage and remove dead code ([ff565f5](https://github.com/newrelic/nr1-catalog-manager/commit/ff565f5c2ce6eed22b589fee66f0de2fe405b6bb))
+* create standalone SearchTable component ([324789f](https://github.com/newrelic/nr1-catalog-manager/commit/324789febe9f53a0e818ad0789131a799ec6b394))
+
 ## [1.0.1](https://github.com/newrelic/nr1-catalog-manager/compare/v1.0.0...v1.0.1) (2020-10-09)
 
 
