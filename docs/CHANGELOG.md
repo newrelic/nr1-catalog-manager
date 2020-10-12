@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/newrelic/nr1-catalog-manager/compare/v1.2.0...v1.3.0) (2020-10-12)
+
+
+### Features
+
+* enhance add/update functionality ([1235d91](https://github.com/newrelic/nr1-catalog-manager/commit/1235d91412b647f6c35bce3e9be2dd9e9798da18))
+
 # [1.2.0](https://github.com/newrelic/nr1-catalog-manager/compare/v1.1.0...v1.2.0) (2020-10-12)
 
 
