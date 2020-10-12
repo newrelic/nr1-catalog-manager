@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/newrelic/nr1-catalog-manager/compare/v1.1.0...v1.2.0) (2020-10-12)
+
+
+### Features
+
+* add catalog workflow ([b862a6e](https://github.com/newrelic/nr1-catalog-manager/commit/b862a6e9698ea93200f5a8d245bd908990cff390))
+
 # [1.1.0](https://github.com/newrelic/nr1-catalog-manager/compare/v1.0.1...v1.1.0) (2020-10-12)
 
 
