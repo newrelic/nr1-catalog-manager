@@ -13,7 +13,6 @@ export default class Settings extends PureComponent {
 
   /**
    * Renders the view to remove the user's token from both NerdStorage and local state
-   * Borrowed from: https://github.com/newrelic/nr1-github/blob/master/nerdlets/github-about/setup.js#L65
    */
   render() {
     const { setUserToken } = this.props;

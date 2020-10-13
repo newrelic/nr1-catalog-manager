@@ -4,15 +4,9 @@ import { Query } from 'react-apollo';
 import { Spinner, StackItem, Stack, Button, Icon } from 'nr1';
 
 import ErrorMessage from '../graphql/ErrorMessage';
-// import { client } from '../graphql/ApolloClientInstance';
-import {
-  // CATALOG_VALIDATION_QUERY
-  // VALIDATION_QUERY,
-  CATALOG_VALIDATION_QUERY,
-  EXPRESSIONS
-} from '../graphql/Queries';
+import { CATALOG_VALIDATION_QUERY, EXPRESSIONS } from '../graphql/Queries';
 
-import { CONFIG_JSON_LENGTH_REQUIREMENTS } from './configJsonRequirements.js';
+import { CONFIG_JSON_LENGTH_REQUIREMENTS } from '../constants/configJsonRequirements.js';
 
 export default class ValidateCatalog extends PureComponent {
   static propTypes = {
@@ -26,16 +20,8 @@ export default class ValidateCatalog extends PureComponent {
     super(props);
     this.state = {
       dimensions: []
-      // validated: false
     };
   }
-
-  // _filterCatalogApps(search) {
-  //   return {
-  //     ...search,
-  //     nodes: search.nodes.filter(n => n.catalog)
-  //   };
-  // }
 
   onImgLoad = ({ target: img }) => {
     // console.log('img:', img);
@@ -104,21 +90,6 @@ export default class ValidateCatalog extends PureComponent {
             })
           : '';
       },
-      // return dimensions.length > 0
-      //   ? dimensions.map((dim, i) => {
-      //       return (
-      //         <div key={i} className="validation-container">
-      //           <div className="item-symbol">
-      //             {this.checkDimensions(dim.width, dim.height)}
-      //           </div>
-      //           <div className="item-title">
-      //             <code>{dim.name}</code>
-      //           </div>
-      //         </div>
-      //       );
-      //     })
-      //   : '';
-      // },
       imageValidationResult:
         results.filter(r => r.status === 'ERROR').length === 0
     };
@@ -158,26 +129,6 @@ export default class ValidateCatalog extends PureComponent {
             }
           />
         );
-      // case 'major':
-      //   return (
-      //     <Icon
-      //       className="timeline-item-symbol-icon"
-      //       color="#BF0016"
-      //       type={
-      //         Icon.TYPE.HARDWARE_AND_SOFTWARE__SOFTWARE__APPLICATION__S_ERROR
-      //       }
-      //     />
-      //   );
-      // case 'critical':
-      //   return (
-      //     <Icon
-      //       className="timeline-item-symbol-icon"
-      //       color="#ffffff"
-      //       type={
-      //         Icon.TYPE.HARDWARE_AND_SOFTWARE__SOFTWARE__APPLICATION__S_DISABLED
-      //       }
-      //     />
-      //   );
     }
   }
 
@@ -186,28 +137,6 @@ export default class ValidateCatalog extends PureComponent {
    * @return "SUCCESS" if all rules pass, otherwise "ERROR"
    */
   processConfigJsonRules(configJson) {
-    // const tagline =
-    //   configJson.tagline &&
-    //   configJson.tagline < CONFIG_JSON_LENGTH_REQUIREMENTS.tagline
-    //     ? 'SUCCESS'
-    //     : 'ERROR';
-
-    // const repository =
-    //   configJson.repository &&
-    //   configJson.repository < CONFIG_JSON_LENGTH_REQUIREMENTS.repository
-    //     ? 'SUCCESS'
-    //     : 'ERROR';
-    // const details =
-    //   configJson.details &&
-    //   configJson.details < CONFIG_JSON_LENGTH_REQUIREMENTS.details
-    //     ? 'SUCCESS'
-    //     : 'ERROR';
-    // const whatsNew =
-    //   configJson.whatsNew &&
-    //   configJson.whatsNew < CONFIG_JSON_LENGTH_REQUIREMENTS.whatsNew
-    //     ? 'SUCCESS'
-    //     : 'ERROR';
-
     return Object.keys(CONFIG_JSON_LENGTH_REQUIREMENTS)
       .map(key => {
         const rule = CONFIG_JSON_LENGTH_REQUIREMENTS[key];
@@ -224,11 +153,7 @@ export default class ValidateCatalog extends PureComponent {
   }
 
   validateConfigJson(repository) {
-    // const test = {
-    //   configJson: null
-    // }
     const text = repository?.configJson?.text;
-    // console.log('text', text);
 
     // Fail fast if there's nothing we can check
     if (!text) {
@@ -247,29 +172,10 @@ export default class ValidateCatalog extends PureComponent {
       };
     }
 
-    // const results = [];
-
     const configJson = JSON.parse(text);
     // console.log('configJson', configJson);
 
-    // Object.keys(configJson).map(key => {
-    //   return results.push({ key: key, value: 'success', state: 'SUCCESS' });
-    //   // value: configJson[key] });
-    // });
-
-    // processRules
     const rulesResult = this.processConfigJsonRules(configJson);
-
-    // Object.keys(CONFIG_JSON_LENGTH_REQUIREMENTS).map(key => {
-    //   const rule = CONFIG_JSON_LENGTH_REQUIREMENTS[key];
-    //   const v = configJson[key];
-
-    //   const result = v ? (v <= rule ? 'SUCCESS' : 'ERROR') : 'ERROR';
-    //   return {
-    //     key: key,
-    //     result: v ? (v < rule ? 'SUCCESS' : 'ERROR') : 'ERROR'
-    //   };
-    // });
 
     return {
       configRenderer: () => {
@@ -284,36 +190,9 @@ export default class ValidateCatalog extends PureComponent {
       },
       configValidationResult: rulesResult === 'SUCCESS'
     };
-    // <div>
-    //   <p>
-    //     <code>catalog/config.json</code>
-    //   </p>
-    //   <div>
-    //     {results.map((r, i) => (
-    //       <p key={i}>
-    //         {r.key}
-    //         <Icon
-    //           type={Icon.TYPE.INTERFACE__SIGN__CHECKMARK__V_ALTERNATE}
-    //           color="#3ca653"
-    //         />
-    //         ;
-    //       </p>
-    //     ))}
-    //   </div>
-    // </div>
   }
 
-  // checkConfigJson(rulesResult) {
-  //   // const check = 'SUCCESS';
-  //   return this.setSymbol(rulesResult);
-  // }
-
   validateAndRenderResults(repository) {
-    // const imageDimResults = validateImageDimensions()
-    // renderImageCheckResult()
-
-    // const configJsonResult = validateConfigJson()
-    // renderConfigJsonResult()
     const {
       imageRenderer,
       imageValidationResult
@@ -326,8 +205,6 @@ export default class ValidateCatalog extends PureComponent {
 
     return (
       <>
-        {/* <div>{this.validateImageDimensions()}</div> */}
-
         <div>{configRenderer()}</div>
         <div>{imageRenderer()}</div>
         <div>{this.renderWorkflowDispatchSubmission(success)}</div>
@@ -336,18 +213,12 @@ export default class ValidateCatalog extends PureComponent {
   }
 
   renderWorkflowDispatchSubmission(success) {
-    // const { repo } = this.props;
-    // const { validated } = this.state;
     return (
       <StackItem grow style={{ width: '100%', marginTop: '16px' }}>
-        {/* <h2>Trigger Workflow Dispatch</h2> */}
         {!success && (
           <p>Errors must be addressed before deployment can occur.</p>
         )}
 
-        {/* <form onSubmit={this.props.triggerWorkflowDispatch}> */}
-        {/* <Stack fullWidth verticalType={Stack.VERTICAL_TYPE.BOTTOM}> */}
-        {/* <StackItem grow> */}
         <Button type={Button.TYPE.Secondary} onClick={this.props.closeModal}>
           Cancel
         </Button>
@@ -358,49 +229,33 @@ export default class ValidateCatalog extends PureComponent {
         >
           Submit for Review
         </Button>
-        {/* </StackItem> */}
-        {/* </Stack> */}
-        {/* </form> */}
       </StackItem>
     );
   }
 
   render() {
-    // const { isSetup, userToken } = this.props;
     const { version, repoName } = this.props;
-
-    // const { dimensions } = this.state;
     const { configExp, documentationExp, screenshotsExp } = EXPRESSIONS(
       version
     );
 
-    // const apClient = client(userToken);
-
-    // if (!isSetup) {
-    //   return <></>;
-    // }
-
     return (
-      // <ApolloProvider client={apClient}>
-      // <Query query={VALIDATION_QUERY}>
-      // <Query query={CATALOG_VALIDATION_QUERY} variables={{ repoName }}>
       <Query
         query={CATALOG_VALIDATION_QUERY}
         variables={{ repoName, configExp, documentationExp, screenshotsExp }}
-        // variables={{ repoName }}
       >
         {({ data, loading, error }) => {
           if (error) {
             return <ErrorMessage error={error} />;
           }
           const { repository } = data;
-          // console.log('result: ', repository);
 
           if (loading || !repository) {
             return <Spinner fillContainer />;
           }
 
-          // console.log('Result: ', repository);
+          // eslint-disable-next-line no-console
+          console.debug('CATALOG_VALIDATION_QUERY', data);
 
           return (
             <Stack directionType={Stack.DIRECTION_TYPE.VERTICAL} fullWidth>
@@ -412,18 +267,13 @@ export default class ValidateCatalog extends PureComponent {
                 >
                   {this.loadImages(repository)}
                 </div>
-                {/* <div>{this.validateImageDimensions()}</div>
-
-                <div>{this.validateConfigJson(repository)}</div> */}
 
                 <div>{this.validateAndRenderResults(repository)}</div>
               </StackItem>
-              {/* {this.renderWorkflowDispatchSubmission()} */}
             </Stack>
           );
         }}
       </Query>
-      // </ApolloProvider>
     );
   }
 }

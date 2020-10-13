@@ -134,8 +134,6 @@ export default class Repositories extends PureComponent {
     const { userToken, globals, catalogRepos, viewer } = this.props;
     const { versions } = globals;
 
-    // TODO: transform data before passing to BootstrapTable
-
     return (
       <>
         <div>

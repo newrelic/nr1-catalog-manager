@@ -18,36 +18,21 @@ export default class Deploy extends React.Component {
   static propTypes = {
     githubUrl: PropTypes.string,
     userToken: PropTypes.string,
-    // isSetup: PropTypes.bool,
     repo: PropTypes.object,
     user: PropTypes.string,
     closeModal: PropTypes.func,
     action: PropTypes.string
-    // setUserToken: PropTypes.func.isRequired
   };
-  // static propTypes = {
-  //   githubUrl: PropTypes.string,
-  //   setGithubUrl: PropTypes.func.isRequired,
-
-  //   userToken: PropTypes.string,
-  //   setActiveTab: PropTypes.func
-  // };
 
   constructor(props) {
     super(props);
     this.state = {
-      // userToken: props.userToken || '',
-      // githubUrl: props.githubUrl || '',
       appName: props.repo.name, // props.appName || '',
       version: props.repo.refs.nodes[0].name, // props.version || '',
       ref: props.repo.refs.nodes[0].target.oid, // props.ref || '',
       user: props.user // props.user || ''
-      // githubUrl: props.githubUrl || '',
-      // isGithubEnterprise: true,
-      // isValidUrl: true
     };
 
-    // this.handleSetGithubUrl = this.handleSetGithubUrl.bind(this);
     this.triggerWorkflowDispatch = this.triggerWorkflowDispatch.bind(this);
   }
 
@@ -58,23 +43,12 @@ export default class Deploy extends React.Component {
 
   async triggerWorkflowDispatch(event) {
     event.preventDefault();
-    // console.log(
-    //   this.state.githubUrl,
-    //   this.state.userToken,
-    //   this.props.githubUrl,
-    //   this.props.userToken,
-    //   this.state.appName,
-    //   this.state.version,
-    //   this.state.ref,
-    //   this.state.user
-    // );
-    // const { userToken, githubUrl, repo } = this.props;
     const { userToken, githubUrl, action, repo } = this.props;
     const { appName, version, ref, user } = this.state;
     const { url } = repo;
     // console.log('DISPATCH:', this.state);
+
     const github = new Github({ userToken, githubUrl });
-    // const path = `repos/jbeveland27/prototype-nr1-actions/actions/workflows/catalog.yml/dispatches`;
     const path = `repos/newrelic/${appName}/actions/workflows/catalog.yml/dispatches`;
 
     await github.post(path, {
@@ -86,10 +60,6 @@ export default class Deploy extends React.Component {
       title: 'Deploy Initiated',
       description:
         'GitHub Workflows initiated. Refresh Workflow tab to view progress.',
-      // actions: [{
-      //   label: 'Say hi!',
-      //   onClick: () => console.log('Hello World!'),
-      // }],
       type: Toast.TYPE.NORMAL
     });
     this.props.closeModal();
@@ -100,7 +70,6 @@ export default class Deploy extends React.Component {
     const refs = get(repo, 'refs.nodes');
     return (
       <div className="select-container">
-        {/* <label className="AACLAC-wnd-TextField-label">Version</label> */}
         <Select
           onChange={(event, value) => {
             const ref = repo.refs.nodes.find(r => r.name === value);
@@ -177,17 +146,11 @@ export default class Deploy extends React.Component {
   render() {
     const { userToken, repo } = this.props;
 
-    // console.log('deploymentRepo:', repo);
-    // console.log('State:', this.state);
-
     return (
       <div className="deploy-modal">
         {userToken && this.renderWorkflowInputForm()}
         {this.state.status === 'VALIDATE' && (
-          <div
-            className="project-screenshots-container"
-            // style={{ height: '100px', border: '1px solid red' }}
-          >
+          <div className="project-screenshots-container">
             <ValidateCatalog
               version={this.state.version}
               repoName={repo.name}

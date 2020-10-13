@@ -30,7 +30,6 @@ export default class CatalogManager extends React.Component {
 
   /**
    * Stores userToken to NerdStorage and refreshes status of page.
-   * Borrowed from: https://github.com/newrelic/nr1-github/blob/master/nerdlets/github-about/main.js#L90
    */
   _setUserToken = userToken => {
     const mutation = {
@@ -49,7 +48,6 @@ export default class CatalogManager extends React.Component {
 
   /**
    * Loads the userToken from NerdStorage
-   * Partially borrowed from: https://github.com/newrelic/nr1-workshop/blob/master/lab9/INSTRUCTIONS.md
    */
   _loadState() {
     UserStorageQuery.query({
@@ -87,15 +85,6 @@ export default class CatalogManager extends React.Component {
 
     return (
       <div className="root">
-        {/* <Grid>
-          <GridItem columnSpan={12}>
-            <Stack
-              directionType={Stack.DIRECTION_TYPE.VERTICAL}
-              horizontalType={Stack.HORIZONTAL_TYPE.CENTER}
-              gapType={Stack.GAP_TYPE.EXTRA_LOOSE}
-              fullWidth
-              fullHeight
-            > */}
         {/* No user, render the login screen */}
         {status === Status.USER_TOKEN_EMPTY && (
           <Auth setUserToken={this._setUserToken} />
@@ -103,7 +92,6 @@ export default class CatalogManager extends React.Component {
 
         {/* User exists, render tabs with repo content from GitHub GraphQL API */}
         {status === Status.USER_TOKEN_SET && (
-          // <StackItem className="container">
           <div className="container">
             <Tabs defaultValue="tab-1" className="tabs">
               <TabsItem value="tab-1" label="Repositories">
@@ -123,11 +111,7 @@ export default class CatalogManager extends React.Component {
               </TabsItem>
             </Tabs>
           </div>
-          // </StackItem>
         )}
-        {/* </Stack>
-          </GridItem>
-        </Grid> */}
       </div>
     );
   }
