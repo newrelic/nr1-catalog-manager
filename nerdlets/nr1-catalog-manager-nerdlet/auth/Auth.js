@@ -46,11 +46,9 @@ export default class Auth extends PureComponent {
 
   /**
    * Renders the login view to accept the user's token and store it in NerdStorage
-   * Partially borrowed from: https://github.com/newrelic/nr1-github/blob/master/nerdlets/github-about/setup.js#L13
    */
   render() {
     const { userToken, githubAccessError } = this.state || {};
-    // const { setUserToken } = this.props;
     const GHURL = 'https://github.com';
 
     return (
@@ -61,13 +59,6 @@ export default class Auth extends PureComponent {
             gapType={Stack.GAP_TYPE.EXTRA_LOOSE}
             className="integration-step-container"
           >
-            {/* {this.renderGithubUrlInput()}
-            {!userToken && this.renderUserTokenInput()}
-            {userToken && this.renderDeleteUserToken()} */}
-
-            {/* <StackItem className="integration-step-container"> */}
-            {/* <Card style={{ width: '600px' }}>
-                <CardBody> */}
             <StackItem>
               <h1>GitHub API Integration</h1>
               <p>
@@ -113,6 +104,7 @@ export default class Auth extends PureComponent {
                       autofocus
                       label="GitHub Token"
                       placeholder="Paste your user token here"
+                      type={TextField.TYPE.PASSWORD}
                       onChange={({ target }) => {
                         this.setState({ userToken: target.value });
                       }}
@@ -131,9 +123,6 @@ export default class Auth extends PureComponent {
                 </Stack>
               </form>
             </StackItem>
-            {/* </CardBody>
-              </Card>
-            </StackItem> */}
           </Stack>
         </GridItem>
         <GridItem columnSpan={4}>
