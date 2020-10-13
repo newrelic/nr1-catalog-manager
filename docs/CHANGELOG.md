@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/newrelic/nr1-catalog-manager/compare/v1.3.0...v1.3.1) (2020-10-13)
+
+
+### Bug Fixes
+
+* use password type for TextField ([d4216cc](https://github.com/newrelic/nr1-catalog-manager/commit/d4216ccce22251bafef1a89bd72ff96a598b8034))
+
 # [1.3.0](https://github.com/newrelic/nr1-catalog-manager/compare/v1.2.0...v1.3.0) (2020-10-12)
 
 
