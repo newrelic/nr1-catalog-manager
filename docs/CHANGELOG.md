@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/newrelic/nr1-catalog-manager/compare/v1.3.1...v1.4.0) (2020-10-15)
+
+
+### Features
+
+* switch UserStorage to UserSecrets (NerdStorageVault) ([3b80d85](https://github.com/newrelic/nr1-catalog-manager/commit/3b80d8596f49a1210a0907abd2db70aa1463356f))
+
 ## [1.3.1](https://github.com/newrelic/nr1-catalog-manager/compare/v1.3.0...v1.3.1) (2020-10-13)
 
 
