@@ -6,6 +6,7 @@ import { Grid, GridItem, TextField, Button, Stack, StackItem } from 'nr1';
 
 import { client } from '../graphql/ApolloClientInstance';
 import { ACCESS_CHECK_QUERY } from '../graphql/Queries';
+import Status from '../constants/Status';
 
 export default class Auth extends PureComponent {
   static propTypes = {
@@ -21,6 +22,7 @@ export default class Auth extends PureComponent {
 
   handleSubmit = event => {
     event.preventDefault();
+    this.setState({ status: Status.AUTH.MUTATING });
     this.checkGithubAccess();
   };
 
@@ -40,7 +42,7 @@ export default class Auth extends PureComponent {
       })
       .catch(err => {
         console.error(err);
-        this.setState({ githubAccessError: err });
+        this.setState({ githubAccessError: err, status: Status.AUTH.ERROR });
       });
   }
 
@@ -48,7 +50,7 @@ export default class Auth extends PureComponent {
    * Renders the login view to accept the user's token and store it in NerdStorage
    */
   render() {
-    const { userToken, githubAccessError } = this.state || {};
+    const { userToken, githubAccessError, status } = this.state || {};
     const GHURL = 'https://github.com';
 
     return (
@@ -116,6 +118,7 @@ export default class Auth extends PureComponent {
                       disabled={!userToken || userToken.length !== 40}
                       type="primary"
                       onClick={this.handleSubmit}
+                      loading={status === Status.AUTH.MUTATING}
                     >
                       Set Your GitHub Token
                     </Button>

@@ -4,7 +4,7 @@ import { Stack, StackItem, Button } from 'nr1';
 
 export default class Settings extends PureComponent {
   static propTypes = {
-    setUserToken: PropTypes.func
+    deleteUserToken: PropTypes.func
   };
 
   constructor(props) {
@@ -15,7 +15,7 @@ export default class Settings extends PureComponent {
    * Renders the view to remove the user's token from both NerdStorage and local state
    */
   render() {
-    const { setUserToken } = this.props;
+    const { deleteUserToken } = this.props;
     const GHURL = 'https://github.com';
 
     return (
@@ -35,7 +35,7 @@ export default class Settings extends PureComponent {
         <Stack alignmentType="center" distributionType="trailing" fill>
           <StackItem>
             <Button
-              onClick={() => setUserToken(null)}
+              onClick={() => deleteUserToken(null)}
               iconType="interface_operations_trash"
               sizeType={Button.SIZE_TYPE.SMALL}
               type={Button.TYPE.DESTRUCTIVE}

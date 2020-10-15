@@ -17,7 +17,7 @@ export default class Workflows extends PureComponent {
     super(props);
 
     this.state = {
-      status: Status.LOADING,
+      status: Status.WORKFLOWS.LOADING,
       hidden: true
     };
   }
@@ -33,13 +33,13 @@ export default class Workflows extends PureComponent {
     // console.log('nr1_catalog_runs', nr1_catalog_runs);
 
     this.setState({
-      status: Status.DATA_FETCHED,
+      status: Status.WORKFLOWS.DATA_FETCHED,
       nr1CatalogWorkflows: nr1_catalog_runs
     });
   }
 
   fetchWorkflowJobs = async (event, { item }) => {
-    this.setState({ hidden: false, status: Status.FETCHING });
+    this.setState({ hidden: false, status: Status.WORKFLOWS.FETCHING });
     // console.log('item', item);
 
     const { id: run_id } = item;
@@ -53,7 +53,7 @@ export default class Workflows extends PureComponent {
     // console.log('workflowJobs', workflowJobs);
 
     this.setState({
-      status: Status.DATA_FETCHED,
+      status: Status.WORKFLOWS.DATA_FETCHED,
       workflowJobs: workflowJobs
     });
   };
@@ -134,7 +134,7 @@ export default class Workflows extends PureComponent {
           )}
         </ToolkitProvider>
         <Modal hidden={this.state.hidden} onClose={this._onClose}>
-          {!hidden && status === Status.DATA_FETCHED && (
+          {!hidden && status === Status.WORKFLOWS.DATA_FETCHED && (
             <>
               {/* {console.log(this.state.workflowJobs)} */}
 
@@ -187,7 +187,7 @@ export default class Workflows extends PureComponent {
   render() {
     const { status } = this.state;
 
-    if (status === Status.LOADING) return <Spinner />;
+    if (status === Status.WORKFLOWS.LOADING) return <Spinner />;
 
     return <div className="">{this.renderWorkflowData()}</div>;
   }

@@ -1,13 +1,7 @@
 /* eslint-disable no-console */
 import React from 'react';
-import {
-  UserStorageQuery,
-  UserStorageMutation,
-  Toast,
-  Spinner,
-  Tabs,
-  TabsItem
-} from 'nr1';
+import { Toast, Spinner, Tabs, TabsItem } from 'nr1';
+import { UserSecretsMutation, UserSecretsQuery } from '@newrelic/nr1-community';
 
 import Auth from '../auth/Auth';
 import GitHubQuery from '../github/GitHubQuery';
@@ -20,7 +14,7 @@ export default class CatalogManager extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      status: Status.LOADING // default state of page is loading as we try to retrive the user's token
+      status: Status.CATALOG_MANAGER.LOADING // default state of page is loading as we try to retrive the user's token
     };
   }
 
@@ -29,20 +23,37 @@ export default class CatalogManager extends React.Component {
   }
 
   /**
-   * Stores userToken to NerdStorage and refreshes status of page.
+   * Deletes userToken from NerdStorageVault and refreshes status of page.
    */
-  _setUserToken = userToken => {
+  _deleteUserToken = async () => {
     const mutation = {
-      actionType: UserStorageMutation.ACTION_TYPE.WRITE_DOCUMENT,
-      collection: 'global',
-      documentId: 'userToken',
-      document: { userToken }
+      actionType: UserSecretsMutation.ACTION_TYPE.DELETE_SECRET,
+      name: 'userToken'
     };
 
-    UserStorageMutation.mutate(mutation);
+    await UserSecretsMutation.mutate(mutation);
+    this.setState({
+      userToken: null,
+      status: Status.CATALOG_MANAGER.USER_TOKEN_EMPTY
+    });
+  };
+
+  /**
+   * Stores userToken to NerdStorageVault and refreshes status of page.
+   */
+  _setUserToken = async userToken => {
+    const mutation = {
+      actionType: UserSecretsMutation.ACTION_TYPE.WRITE_SECRET,
+      name: 'userToken',
+      value: userToken
+    };
+
+    await UserSecretsMutation.mutate(mutation);
     this.setState({
       userToken,
-      status: userToken ? Status.USER_TOKEN_SET : Status.USER_TOKEN_EMPTY
+      status: userToken
+        ? Status.CATALOG_MANAGER.USER_TOKEN_SET
+        : Status.CATALOG_MANAGER.USER_TOKEN_EMPTY
     });
   };
 
@@ -50,30 +61,35 @@ export default class CatalogManager extends React.Component {
    * Loads the userToken from NerdStorage
    */
   _loadState() {
-    UserStorageQuery.query({
-      collection: 'global',
-      documentId: 'userToken'
+    UserSecretsQuery.query({
+      name: 'userToken'
     })
       .then(({ data }) => {
         if (!data) {
           console.log(
             'Cannot update state. No new entities returned from UserStorageQuery.'
           );
-          this.setState({ userToken: null, status: Status.USER_TOKEN_EMPTY });
+          this.setState({
+            userToken: null,
+            status: Status.CATALOG_MANAGER.USER_TOKEN_EMPTY
+          });
         } else {
-          console.debug(data);
+          // console.debug(data);
 
           this.setState({
-            userToken: data.userToken,
-            status: data.userToken
-              ? Status.USER_TOKEN_SET
-              : Status.USER_TOKEN_EMPTY
+            userToken: data.value,
+            status: data.value
+              ? Status.CATALOG_MANAGER.USER_TOKEN_SET
+              : Status.CATALOG_MANAGER.USER_TOKEN_EMPTY
           });
         }
       })
       .catch(error => {
         console.error(error);
-        this.setState({ userToken: null, status: Status.USER_TOKEN_EMPTY });
+        this.setState({
+          userToken: null,
+          status: Status.CATALOG_MANAGER.USER_TOKEN_EMPTY
+        });
         Toast.showToast({ title: error.message, type: Toast.TYPE.CRITICAL });
       });
   }
@@ -81,17 +97,18 @@ export default class CatalogManager extends React.Component {
   render() {
     const { userToken, status } = this.state;
 
-    if (status === Status.LOADING) return <Spinner fillContainer />;
+    if (status === Status.CATALOG_MANAGER.LOADING)
+      return <Spinner fillContainer />;
 
     return (
       <div className="root">
         {/* No user, render the login screen */}
-        {status === Status.USER_TOKEN_EMPTY && (
+        {status === Status.CATALOG_MANAGER.USER_TOKEN_EMPTY && (
           <Auth setUserToken={this._setUserToken} />
         )}
 
         {/* User exists, render tabs with repo content from GitHub GraphQL API */}
-        {status === Status.USER_TOKEN_SET && (
+        {status === Status.CATALOG_MANAGER.USER_TOKEN_SET && (
           <div className="container">
             <Tabs defaultValue="tab-1" className="tabs">
               <TabsItem value="tab-1" label="Repositories">
@@ -107,7 +124,7 @@ export default class CatalogManager extends React.Component {
                 />
               </TabsItem>
               <TabsItem value="tab-4" label="Settings">
-                <Settings setUserToken={this._setUserToken} />
+                <Settings deleteUserToken={this._deleteUserToken} />
               </TabsItem>
             </Tabs>
           </div>
