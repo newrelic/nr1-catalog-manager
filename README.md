@@ -9,6 +9,22 @@ This project is used by New Relic to manage the collection of open source Nerdpa
 
 Currently, this can be used to view and _initiate_ updates to the Catalog (via a set of GitHub Actions workflows) by generating new Pull Requests to the [nr1-catalog](https://github.com/newrelic/nr1-catalog). You can also view existing Pull Requests to `nr1-catalog`, as well as see the state of Workflows.
 
+## First Time Additions to the Catalog
+
+If you are adding an application to the catalog for the first time you will need to change the application subscription model to `GLOBAL`. Therefore you will need to make a request to `#help-nr1-platformservices` via Slack to change the model of the application.
+
+### Request message
+
+@hero `App name`  `version`  `global uuid` : needs to be changed to a `GLOBAL` subscription model.
+
+## Updating NR1 Platform Environments
+
+When making an update to an application in the Catalog this workflow provided by the Catalog Manager will only update the `US:Production` environment of New Relic One. Therefore you will need to make a request to `#help-nr1-platformservices` via Slack to update `EU:Production` and `Staging`
+
+### Request message
+
+@hero `App name`  `version`  `global uuid` : was merged into the master and updated on PROD using the catalog-manager. please update EU and staging.
+
 ![Repository Overview](catalog/screenshots/nr1-catalog-manager-1.png)
 
 ## Open source license
