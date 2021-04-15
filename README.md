@@ -11,7 +11,9 @@ Currently, this can be used to view and _initiate_ updates to the Catalog (via a
 
 ## First Time Additions to the Catalog
 
-If you are adding an application to the catalog for the first time you will need to change the application subscription model to `GLOBAL`. Therefore you will need to make a request to `#help-nr1-platformservices` via Slack to change the model of the application.
+If you wish to add application to the catalog for the first time you will need to change the application subscription model to `GLOBAL`.
+
+The request to change an application from `owner_and_allowed` (3rd party custom apps) to `GLOBAL` (3rd party global apps) has to be done by a Relic, so please make this request in the form of a new issue in the repo you are developing in. A Relic can then make a request to `#help-nr1-platformservices` via Slack to change the model of the application.
 
 ### Request message
 
