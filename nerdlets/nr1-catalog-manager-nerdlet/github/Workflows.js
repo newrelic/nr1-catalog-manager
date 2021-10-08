@@ -119,32 +119,41 @@ export default class Workflows extends PureComponent {
     // console.log('workflows', workflowRuns);
     return (
       <div style={{ overflowX: 'auto' }}>
-        <ToolkitProvider
-          wrapperClasses="table-responsive"
-          keyField="id"
-          data={workflowRuns}
-          columns={columns}
-          search
-        >
-          {props => (
-            <>
-              <SearchBar {...props.searchProps} />
-              <BootstrapTable {...props.baseProps} rowEvents={rowEvents} />
-            </>
-          )}
-        </ToolkitProvider>
-        <Modal hidden={this.state.hidden} onClose={this._onClose}>
-          {!hidden && status === Status.WORKFLOWS.DATA_FETCHED && (
-            <>
-              {/* {console.log(this.state.workflowJobs)} */}
+        {workflowRuns ? (
+          <>
+            <ToolkitProvider
+              wrapperClasses="table-responsive"
+              keyField="id"
+              data={workflowRuns}
+              columns={columns}
+              search
+            >
+              {props => (
+                <>
+                  <SearchBar {...props.searchProps} />
+                  <BootstrapTable {...props.baseProps} rowEvents={rowEvents} />
+                </>
+              )}
+            </ToolkitProvider>
+            <Modal hidden={this.state.hidden} onClose={this._onClose}>
+              {!hidden && status === Status.WORKFLOWS.DATA_FETCHED && (
+                <>
+                  {/* {console.log(this.state.workflowJobs)} */}
 
-              {this.renderWorkflowJobs()}
-              <Button onClick={this._onClose} style={{ marginTop: '10px' }}>
-                Close
-              </Button>
-            </>
-          )}
-        </Modal>
+                  {this.renderWorkflowJobs()}
+                  <Button onClick={this._onClose} style={{ marginTop: '10px' }}>
+                    Close
+                  </Button>
+                </>
+              )}
+            </Modal>
+          </>
+        ) : (
+          <p>
+            There was a problem fetching workflows from github. Try
+            checking/replacing your github token
+          </p>
+        )}
       </div>
     );
   }

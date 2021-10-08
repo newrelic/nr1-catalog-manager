@@ -7,7 +7,8 @@ import PropTypes from 'prop-types';
  */
 const ErrorMessage = ({ error }) => (
   <div className="ErrorMessage">
-    <small>{error.toString()}</small>
+    <p>{error.toString()}</p>
+    <p>Try checking/replacing your github token</p>
   </div>
 );
 
