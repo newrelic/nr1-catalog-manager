@@ -1,3 +1,11 @@
+## [1.4.1](https://github.com/newrelic/nr1-catalog-manager/compare/v1.4.0...v1.4.1) (2021-10-13)
+
+
+### Bug Fixes
+
+* Add error state to workflows tab ([3b9d956](https://github.com/newrelic/nr1-catalog-manager/commit/3b9d956e8bdfe5586a07786f537d6a4b6e043711))
+* use new release workflow ([8b3552a](https://github.com/newrelic/nr1-catalog-manager/commit/8b3552a1b48a9bcfb94f7b85d6c9bd804adf1be1))
+
 # [1.4.0](https://github.com/newrelic/nr1-catalog-manager/compare/v1.3.1...v1.4.0) (2020-10-15)
 
 
