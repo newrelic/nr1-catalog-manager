@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/newrelic/nr1-catalog-manager/compare/v1.4.1...v1.5.0) (2022-02-15)
+
+
+### Features
+
+* upgrade to node 16 ([a3a5ee2](https://github.com/newrelic/nr1-catalog-manager/commit/a3a5ee2c8fa9c896dd5a904b5ece83b906dc7f78))
+
 ## [1.4.1](https://github.com/newrelic/nr1-catalog-manager/compare/v1.4.0...v1.4.1) (2021-10-13)
 
 
