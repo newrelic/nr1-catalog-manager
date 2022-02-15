@@ -38,6 +38,7 @@ This project is distributed under the [Apache 2 license](LICENSE).
 - You will need to set up Personal Access Tokens to allow the communication between repositories to occur.
 - Your own version of the [newrelic/nr1-catalog](https://github.com/newrelic/nr1-catalog) repo (whether a fork or a clone)
 - Catalog workflows in [your nerdpack repo](https://github.com/newrelic/nr1-browser-analyzer/blob/main/.github/workflows/catalog.yml) and [your catalog reop](https://github.com/newrelic/nr1-catalog/blob/master/.github/workflows/generate-catalog-pr.yml)
+- You will need to run `Node 16`
 
 ## Getting started
 
