@@ -15,7 +15,7 @@ export const ACCESS_CHECK_QUERY = gql`
 export const CATALOG_REPOS_QUERY = gql`
   {
     nr1Repos: search(
-      query: "org:newrelic nerdpack OR nr1 in:topics fork:false archived:false is:public"
+      query: "org:newrelic nrlabs-viz OR nerdpack OR nr1 in:topics fork:false archived:false is:public"
       type: REPOSITORY
       first: 100
     ) {
