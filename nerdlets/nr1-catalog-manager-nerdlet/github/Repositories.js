@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { HeadingText, Button, Modal } from 'nr1';
+import { HeadingText, Button, Modal, BlockText } from 'nr1';
 import get from 'lodash.get';
 import Deploy from '../deploy/Deploy';
 
@@ -56,7 +56,11 @@ export default class Repositories extends PureComponent {
         dataField: 'name',
         text: 'Name',
         formatter: cell => (
-          <a href={cell.url} target="_blank" rel="noopener noreferrer">
+          <a
+            href={`https://github.com/newrelic/${cell}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {cell}
           </a>
         )
@@ -138,12 +142,19 @@ export default class Repositories extends PureComponent {
       <>
         <div>
           <HeadingText
-            spacingType={[HeadingText.SPACING_TYPE.OMIT]}
+            spacingType={[HeadingText.SPACING_TYPE.MEDIUM]}
             className="heading"
           >
             Catalog Repository List for user:{' '}
             <strong style={{ color: '#008c99' }}>{viewer.login}</strong>
           </HeadingText>
+          <BlockText
+            spacingType={[BlockText.SPACING_TYPE.MEDIUM]}
+            type={BlockText.TYPE.PARAGRAPH}
+          >
+            Not seeing your repository below? Make sure it has the topic{' '}
+            <code>nerdpack</code>
+          </BlockText>
         </div>
         <SearchTable
           data={this._transformRepositories(catalogRepos, versions)}

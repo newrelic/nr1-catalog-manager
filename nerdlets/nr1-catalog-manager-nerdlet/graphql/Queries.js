@@ -15,7 +15,7 @@ export const ACCESS_CHECK_QUERY = gql`
 export const CATALOG_REPOS_QUERY = gql`
   {
     nr1Repos: search(
-      query: "org:newrelic nr1 fork:false archived:false is:public"
+      query: "org:newrelic nerdpack OR nr1 in:topics fork:false archived:false is:public"
       type: REPOSITORY
       first: 100
     ) {
@@ -28,7 +28,7 @@ export const CATALOG_REPOS_QUERY = gql`
           url
           refs(
             refPrefix: "refs/tags/"
-            first: 25
+            first: 5
             orderBy: { field: TAG_COMMIT_DATE, direction: DESC }
           ) {
             nodes {
