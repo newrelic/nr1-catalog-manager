@@ -1,3 +1,12 @@
+## [1.5.1](https://github.com/newrelic/nr1-catalog-manager/compare/v1.5.0...v1.5.1) (2023-12-06)
+
+
+### Bug Fixes
+
+* update query to use topics instead of search string ([f9804b9](https://github.com/newrelic/nr1-catalog-manager/commit/f9804b95eb5547de982cc7b616c8a09a590136e5))
+* use correct length for fine-grained access token ([4257646](https://github.com/newrelic/nr1-catalog-manager/commit/42576467ed86c18f153d1bf56a169be5f8e3db2d))
+* use nrlabs-viz in query ([f2eb8aa](https://github.com/newrelic/nr1-catalog-manager/commit/f2eb8aa43d1dcc9d4626b6ff7e8688d8ba1fb948))
+
 # [1.5.0](https://github.com/newrelic/nr1-catalog-manager/compare/v1.4.1...v1.5.0) (2022-02-15)
 
 
