@@ -115,7 +115,7 @@ export default class Auth extends PureComponent {
                   </StackItem>
                   <StackItem>
                     <Button
-                      disabled={!userToken || userToken.length !== 40}
+                      disabled={!userToken || userToken.length !== 93}
                       type="primary"
                       onClick={this.handleSubmit}
                       loading={status === Status.AUTH.MUTATING}
